@@ -1,0 +1,82 @@
+@use 'sass:color';
+@use '@shared/styles/variables' as *;
+
+.btn {
+  @include focus-outline;
+  padding: $spacing-sm $spacing-md;
+  border-radius: $radius-lg;
+  font-weight: $fw-medium;
+  font-size: $fs-sm;
+  transition: all $transition-fast;
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  // Variants
+  &--primary {
+    background-color: $color-primary;
+    color: white;
+
+    &:hover:not(:disabled) {
+      background-color: $color-primary-dark;
+      box-shadow: $shadow-md;
+    }
+
+    &:active:not(:disabled) {
+      background-color: $color-primary-dark;
+      transform: scale(0.98);
+    }
+  }
+
+  &--secondary {
+    background-color: $color-bg-tertiary;
+    color: $color-text;
+    border: 1px solid $color-border;
+
+    &:hover:not(:disabled) {
+      background-color: $color-border;
+    }
+
+    &:active:not(:disabled) {
+      background-color: $color-border-dark;
+    }
+  }
+
+  &--danger {
+    background-color: $color-danger;
+    color: white;
+
+    &:hover:not(:disabled) {
+      background-color: color.adjust($color-danger, $lightness: -10%);
+      box-shadow: $shadow-md;
+    }
+
+    &:active:not(:disabled) {
+      transform: scale(0.98);
+    }
+  }
+
+  // Sizes
+  &--sm {
+    padding: $spacing-xs $spacing-sm;
+    font-size: $fs-xs;
+  }
+
+  &--md {
+    padding: $spacing-sm $spacing-md;
+    font-size: $fs-sm;
+  }
+
+  &--lg {
+    padding: $spacing-md $spacing-lg;
+    font-size: $fs-base;
+  }
+
+  // Full width
+  &--full-width {
+    width: 100%;
+  }
+}

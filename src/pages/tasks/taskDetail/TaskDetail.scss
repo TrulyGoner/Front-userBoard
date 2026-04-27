@@ -1,0 +1,42 @@
+@use '@shared/styles/variables' as *;
+
+.task-detail {
+  padding: $spacing-lg;
+  max-width: 800px;
+  margin: 0 auto;
+
+  h2 {
+    color: $color-primary;
+    margin-bottom: $spacing-xl;
+  }
+
+  &__info {
+    background: $color-bg;
+    border-radius: $radius-lg;
+    padding: $spacing-lg;
+    box-shadow: $shadow-md;
+
+    p {
+      margin: $spacing-md 0;
+      font-size: $fs-base;
+
+      strong {
+        color: $color-text;
+        font-weight: $fw-semibold;
+      }
+    }
+  }
+
+  &__loading,
+  &__error {
+    text-align: center;
+    padding: $spacing-xl;
+    background: $color-bg;
+    border-radius: $radius-lg;
+  }
+
+  &__error {
+    border: 1px solid $color-danger;
+    color: $color-danger;
+  }
+}

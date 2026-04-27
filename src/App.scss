@@ -1,0 +1,67 @@
+@use './shared/styles/variables' as *;
+
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: $color-bg-secondary;
+}
+
+.app__header {
+  background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+  color: white;
+  box-shadow: $shadow-lg;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.app__header-content {
+  @include flex-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: $spacing-lg;
+  width: 100%;
+  gap: $spacing-lg;
+  flex-wrap: wrap;
+}
+
+.app__logo {
+  font-size: $fs-2xl;
+  margin: 0;
+  font-weight: $fw-bold;
+  white-space: nowrap;
+}
+
+.app__user {
+  @include flex-center;
+  gap: $spacing-md;
+  flex-wrap: wrap;
+}
+
+.app__user-info {
+  font-size: $fs-sm;
+  white-space: nowrap;
+
+  strong {
+    font-weight: $fw-bold;
+  }
+}
+
+.app__main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  max-width: 100%;
+  overflow: auto;
+}
+
+@include media-up('md') {
+  .app__header-content {
+    padding: $spacing-xl;
+  }
+
+  .app__logo {
+    font-size: $fs-3xl;
+  }
+}

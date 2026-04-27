@@ -1,0 +1,54 @@
+@use '@shared/styles/variables' as *;
+
+.input-wrapper {
+  @include flex-column;
+  gap: $spacing-sm;
+  width: 100%;
+}
+
+.input-label {
+  font-weight: $fw-medium;
+  font-size: $fs-sm;
+  color: $color-text;
+}
+
+.input {
+  @include focus-outline;
+  padding: $spacing-sm $spacing-md;
+  border: 1px solid $color-border;
+  border-radius: $radius-lg;
+  font-size: $fs-base;
+  transition: all $transition-fast;
+
+  &::placeholder {
+    color: $color-text-tertiary;
+  }
+
+  &:hover:not(:disabled) {
+    border-color: $color-border-dark;
+  }
+
+  &:focus {
+    border-color: $color-primary;
+  }
+
+  &:disabled {
+    background-color: $color-bg-tertiary;
+    color: $color-text-tertiary;
+    cursor: not-allowed;
+  }
+
+  &--error {
+    border-color: $color-danger;
+
+    &:focus {
+      border-color: $color-danger;
+    }
+  }
+}
+
+.input-error {
+  font-size: $fs-xs;
+  color: $color-danger;
+  margin-top: -$spacing-sm;
+}

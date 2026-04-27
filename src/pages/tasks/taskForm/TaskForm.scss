@@ -1,0 +1,76 @@
+@use '@shared/styles/variables' as *;
+
+.task-form {
+  padding: $spacing-lg;
+  background: $color-bg-secondary;
+  min-height: 100vh;
+
+  &__container {
+    max-width: 600px;
+    margin: 0 auto;
+    background: $color-bg;
+    border-radius: $radius-xl;
+    padding: $spacing-xl;
+    box-shadow: $shadow-lg;
+
+    h2 {
+      text-align: center;
+      margin-bottom: $spacing-xl;
+      color: $color-primary;
+    }
+  }
+
+  &__form {
+    @include flex-column;
+    gap: $spacing-lg;
+  }
+
+  &__label {
+    font-weight: $fw-medium;
+    font-size: $fs-sm;
+    color: $color-text;
+    display: block;
+    margin-bottom: $spacing-sm;
+  }
+
+  &__textarea-wrapper {
+    @include flex-column;
+    gap: $spacing-sm;
+  }
+
+  &__textarea {
+    @include focus-outline;
+    padding: $spacing-md;
+    border: 1px solid $color-border;
+    border-radius: $radius-lg;
+    font-family: inherit;
+    font-size: $fs-base;
+    resize: vertical;
+    min-height: 120px;
+    transition: all $transition-fast;
+
+    &:hover {
+      border-color: $color-border-dark;
+    }
+
+    &:focus {
+      border-color: $color-primary;
+    }
+  }
+
+  &__row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: $spacing-lg;
+
+    @include media-up('sm') {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__actions {
+    @include flex-column;
+    gap: $spacing-md;
+    margin-top: $spacing-lg;
+  }
+}
