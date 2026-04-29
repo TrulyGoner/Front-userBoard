@@ -4,7 +4,7 @@ import type { RootState, AppDispatch } from '@store';
 import { register as registerUser } from '@store/slices/authSlice';
 import { Button, Input, ErrorAlert } from '@shared/ui';
 import { useErrorHandling } from '@shared/hooks';
-import './AuthForms.scss';
+import './Register.scss';
 
 interface RegisterForm {
   nickname: string;

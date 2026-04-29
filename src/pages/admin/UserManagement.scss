@@ -1,0 +1,136 @@
+@use '@shared/styles/variables' as *;
+
+.user-management {
+  padding: $spacing-lg;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  h2 {
+    margin: 0 0 $spacing-lg 0;
+    font-size: $fs-2xl;
+    color: $color-text;
+  }
+
+  &__error {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: $spacing-lg;
+    border-radius: $radius-lg;
+    text-align: center;
+  }
+
+  &__search {
+    margin-bottom: $spacing-lg;
+
+    input {
+      max-width: 400px;
+    }
+  }
+
+  &__loading {
+    text-align: center;
+    padding: $spacing-xl;
+    color: $color-text-secondary;
+  }
+
+  &__empty {
+    text-align: center;
+    padding: $spacing-xl;
+    color: $color-text-secondary;
+    font-size: $fs-lg;
+  }
+
+  &__table {
+    overflow-x: auto;
+    border-radius: $radius-lg;
+    box-shadow: $shadow-md;
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+
+      thead {
+        background-color: $color-bg-tertiary;
+
+        th {
+          padding: $spacing-md;
+          text-align: left;
+          font-weight: $fw-bold;
+          color: $color-text;
+          border-bottom: 2px solid $color-border;
+        }
+      }
+
+      tbody {
+        tr {
+          border-bottom: 1px solid $color-border;
+          transition: background-color $transition-fast;
+
+          &:hover {
+            background-color: rgba($color-primary, 0.02);
+          }
+
+          &:last-child {
+            border-bottom: none;
+          }
+        }
+      }
+
+      td {
+        padding: $spacing-md;
+        color: $color-text;
+      }
+    }
+  }
+
+  &__row--banned {
+    opacity: 0.7;
+    background-color: rgba(#f8d7da, 0.1);
+  }
+
+  &__badge {
+    display: inline-block;
+    padding: $spacing-xs $spacing-sm;
+    border-radius: $radius-md;
+    font-size: $fs-xs;
+    font-weight: $fw-medium;
+
+    &--admin {
+      background-color: #e7d4f5;
+      color: #4a148c;
+    }
+
+    &--user {
+      background-color: #e3f2fd;
+      color: #1565c0;
+    }
+  }
+
+  &__status {
+    display: inline-block;
+    padding: $spacing-xs $spacing-sm;
+    border-radius: $radius-md;
+    font-size: $fs-xs;
+    font-weight: $fw-medium;
+
+    &--active {
+      background-color: #d4edda;
+      color: #155724;
+    }
+
+    &--banned {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: $spacing-sm;
+
+    button {
+      white-space: nowrap;
+    }
+  }
+}

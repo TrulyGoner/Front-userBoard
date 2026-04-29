@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
-import { API_BASE_URL, API_ENDPOINTS } from '@shared/config';
+import { authAPI, apiService } from '@shared/services';
 import type { AuthState } from '@shared/types';
 
 const initialState: AuthState = {
@@ -13,23 +12,18 @@ const initialState: AuthState = {
 export const login = createAsyncThunk(
   'auth/login',
   async ({ nickname, password }: { nickname: string; password: string }) => {
-    const response = await axios.post(`${API_BASE_URL}${API_ENDPOINTS.AUTH.LOGIN}`, {
-      nickname,
-      password,
-    });
-    return response.data;
+    const data = await authAPI.login({ nickname, password });
+    apiService.setToken(data.accessToken);
+    return data;
   }
 );
 
 export const register = createAsyncThunk(
   'auth/register',
   async ({ nickname, password, email }: { nickname: string; password: string; email?: string }) => {
-    const response = await axios.post(`${API_BASE_URL}${API_ENDPOINTS.AUTH.REGISTER}`, {
-      nickname,
-      password,
-      email,
-    });
-    return response.data;
+    const data = await authAPI.register({ nickname, password, email });
+    apiService.setToken(data.accessToken);
+    return data;
   }
 );
 

@@ -1,0 +1,112 @@
+@use '@shared/styles/variables' as *;
+
+.assignment-panel {
+  background: $color-bg-tertiary;
+  border-radius: $radius-md;
+  padding: $spacing-md;
+  margin-top: $spacing-md;
+
+  h3 {
+    margin: 0 0 $spacing-md 0;
+    font-size: $fs-base;
+    color: $color-text;
+  }
+
+  &__info {
+    margin-bottom: $spacing-md;
+  }
+
+  &__detail {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    font-size: $fs-sm;
+
+    strong {
+      font-weight: $fw-bold;
+    }
+  }
+
+  &__badge {
+    display: inline-block;
+    padding: 2px 8px;
+    background-color: #fff3cd;
+    color: #856404;
+    border-radius: $radius-sm;
+    font-size: $fs-xs;
+    font-weight: $fw-medium;
+
+    &--approved {
+      background-color: #d4edda;
+      color: #155724;
+    }
+
+    &--rejected {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+  }
+
+  &__assign-form {
+    display: flex;
+    gap: $spacing-sm;
+    flex-wrap: wrap;
+    margin-bottom: $spacing-md;
+
+    select {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    button {
+      white-space: nowrap;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: $spacing-sm;
+    flex-wrap: wrap;
+
+    button {
+      flex: 1;
+      min-width: 150px;
+    }
+  }
+
+  &__reject-form {
+    background: white;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    padding: $spacing-md;
+    margin-top: $spacing-md;
+  }
+
+  &__textarea {
+    width: 100%;
+    min-height: 80px;
+    padding: $spacing-sm;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    font-family: inherit;
+    font-size: $fs-sm;
+    resize: vertical;
+    margin-bottom: $spacing-md;
+
+    &:focus {
+      outline: none;
+      border-color: $color-primary;
+    }
+  }
+
+  &__reject-actions {
+    display: flex;
+    gap: $spacing-sm;
+    flex-wrap: wrap;
+
+    button {
+      flex: 1;
+      min-width: 150px;
+    }
+  }
+}

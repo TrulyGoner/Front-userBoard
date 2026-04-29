@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { API_BASE_URL, API_ENDPOINTS } from '@shared/config';
 import type { RootState } from '../index';
 import type { Task } from '@shared/types';
@@ -30,10 +30,30 @@ const initialState: TasksState = {
 
 export const fetchTasks = createAsyncThunk(
   'tasks/fetchTasks',
-  async (params: { page?: number; pageSize?: number; status?: string; tag?: string; q?: string; sort?: string; order?: string; mine?: string }, { getState }) => {
+  async (params: { page?: number; pageSize?: number; status?: string | string[]; priority?: string | string[]; tag?: string; q?: string; sort?: string; order?: string; mine?: string }, { getState }) => {
     const state = getState() as RootState;
-    const response = await axios.get(`${API_BASE_URL}${API_ENDPOINTS.TASKS.LIST}`, {
-      params,
+
+    const queryParams = new URLSearchParams();
+    
+    if (params.page) queryParams.append('page', params.page.toString());
+    if (params.pageSize) queryParams.append('pageSize', params.pageSize.toString());
+    if (params.sort) queryParams.append('sort', params.sort);
+    if (params.order) queryParams.append('order', params.order);
+    if (params.q) queryParams.append('q', params.q);
+    if (params.tag) queryParams.append('tag', params.tag);
+    if (params.mine) queryParams.append('mine', params.mine);
+
+    if (params.status) {
+      const statusList = Array.isArray(params.status) ? params.status : [params.status];
+      statusList.forEach(s => queryParams.append('status', s));
+    }
+
+    if (params.priority) {
+      const priorityList = Array.isArray(params.priority) ? params.priority : [params.priority];
+      priorityList.forEach(p => queryParams.append('priority', p));
+    }
+    
+    const response = await axios.get(`${API_BASE_URL}${API_ENDPOINTS.TASKS.LIST}?${queryParams.toString()}`, {
       headers: { Authorization: `Bearer ${state.auth.token}` },
     });
     return response.data;
@@ -70,6 +90,86 @@ export const updateTask = createAsyncThunk(
       headers: { Authorization: `Bearer ${state.auth.token}` },
     });
     return response.data;
+  }
+);
+
+export const assignTask = createAsyncThunk(
+  'tasks/assignTask',
+  async ({ id, assigneeId }: { id: string; assigneeId: string }, { getState }) => {
+    const state = getState() as RootState;
+    const response = await axios.post(`${API_BASE_URL}${API_ENDPOINTS.TASKS.ASSIGN(id)}`, { assigneeId }, {
+      headers: { Authorization: `Bearer ${state.auth.token}` },
+    });
+    return response.data;
+  }
+);
+
+export const approveAssignment = createAsyncThunk(
+  'tasks/approveAssignment',
+  async (id: string, { getState }) => {
+    const state = getState() as RootState;
+    const response = await axios.post(`${API_BASE_URL}${API_ENDPOINTS.TASKS.APPROVE_ASSIGNMENT(id)}`, {}, {
+      headers: { Authorization: `Bearer ${state.auth.token}` },
+    });
+    return response.data;
+  }
+);
+
+export const rejectAssignment = createAsyncThunk(
+  'tasks/rejectAssignment',
+  async ({ id, reason }: { id: string; reason: string }, { getState }) => {
+    const state = getState() as RootState;
+    const response = await axios.post(`${API_BASE_URL}${API_ENDPOINTS.TASKS.REJECT_ASSIGNMENT(id)}`, { comment: reason }, {
+      headers: { Authorization: `Bearer ${state.auth.token}` },
+    });
+    return response.data;
+  }
+);
+
+export const updateTaskStatus = createAsyncThunk(
+  'tasks/updateTaskStatus',
+  async ({ id, status }: { id: string; status: 'TODO' | 'IN_PROGRESS' | 'DONE' }, { getState, rejectWithValue }) => {
+    const state = getState() as RootState;
+    try {
+      const response = await axios.patch(
+        `${API_BASE_URL}${API_ENDPOINTS.TASKS.UPDATE(id)}/assignee-status`,
+        { status },
+        { headers: { Authorization: `Bearer ${state.auth.token}` } }
+      );
+      return response.data;
+    } catch (error) {
+      const axiosError = error as AxiosError;
+      if (axiosError.response?.status === 403) {
+        try {
+          const taskResponse = await axios.get(
+            `${API_BASE_URL}${API_ENDPOINTS.TASKS.DETAIL(id)}`,
+            { headers: { Authorization: `Bearer ${state.auth.token}` } }
+          );
+          const task = taskResponse.data as Task & { viewers?: Array<{ id: string }> };
+
+          const updateResponse = await axios.put(
+            `${API_BASE_URL}${API_ENDPOINTS.TASKS.UPDATE(id)}`,
+            {
+              title: task.title,
+              description: task.description || '',
+              status,
+              priority: task.priority,
+              visibility: task.visibility,
+              viewerUserIds: task.viewers?.map((v) => v.id) || []
+            },
+            { headers: { Authorization: `Bearer ${state.auth.token}` } }
+          );
+          return updateResponse.data;
+        } catch (innerError) {
+          const innerAxiosError = innerError as AxiosError<{ message: string }>;
+          console.error('Task status update error (fallback):', innerAxiosError.response?.data || innerAxiosError.message);
+          return rejectWithValue(innerAxiosError.response?.data?.message || innerAxiosError.message);
+        }
+      }
+      
+      console.error('Task status update error:', axiosError.response?.data || axiosError.message);
+      return rejectWithValue(axiosError.response?.data || axiosError.message);
+    }
   }
 );
 
@@ -141,6 +241,75 @@ const tasksSlice = createSlice({
       .addCase(updateTask.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || 'Failed to update task';
+      })
+      .addCase(assignTask.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(assignTask.fulfilled, (state, action) => {
+        state.loading = false;
+        if (state.currentTask?.id === action.payload.id) {
+          state.currentTask = action.payload;
+        }
+      })
+      .addCase(assignTask.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || 'Failed to assign task';
+      })
+      .addCase(approveAssignment.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(approveAssignment.fulfilled, (state, action) => {
+        state.loading = false;
+        if (state.currentTask?.id === action.payload.id) {
+          state.currentTask = action.payload;
+        }
+      })
+      .addCase(approveAssignment.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || 'Failed to approve assignment';
+      })
+      .addCase(rejectAssignment.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(rejectAssignment.fulfilled, (state, action) => {
+        state.loading = false;
+        if (state.currentTask?.id === action.payload.id) {
+          state.currentTask = action.payload;
+        }
+      })
+      .addCase(rejectAssignment.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || 'Failed to reject assignment';
+      })
+      .addCase(updateTaskStatus.pending, (state, action) => {
+        state.error = null;
+        // Optimistic update: immediately update task status in UI
+        const taskId = action.meta.arg.id;
+        const newStatus = action.meta.arg.status;
+        const index = state.tasks.findIndex(task => task.id === taskId);
+        if (index !== -1) {
+          state.tasks[index].status = newStatus;
+        }
+        if (state.currentTask?.id === taskId) {
+          state.currentTask.status = newStatus;
+        }
+      })
+      .addCase(updateTaskStatus.fulfilled, (state, action) => {
+        const index = state.tasks.findIndex(task => task.id === action.payload.id);
+        if (index !== -1) {
+          state.tasks[index] = action.payload;
+        }
+        if (state.currentTask?.id === action.payload.id) {
+          state.currentTask = action.payload;
+        }
+      })
+      .addCase(updateTaskStatus.rejected, (state, action) => {
+        state.error = action.error.message || 'Failed to update task status';
+        // Revert optimistic update on error - re-fetch tasks from API
+        // This will be handled by component-level error handling or user retry
       });
   },
 });

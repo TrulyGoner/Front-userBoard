@@ -10,11 +10,33 @@
     margin-bottom: $spacing-xl;
   }
 
+  &__header {
+    @include flex-between;
+    margin-bottom: $spacing-xl;
+    flex-wrap: wrap;
+    gap: $spacing-md;
+
+    a {
+      text-decoration: none;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: $spacing-sm;
+    flex-wrap: wrap;
+
+    a {
+      text-decoration: none;
+    }
+  }
+
   &__info {
     background: $color-bg;
     border-radius: $radius-lg;
     padding: $spacing-lg;
     box-shadow: $shadow-md;
+    margin-bottom: $spacing-lg;
 
     p {
       margin: $spacing-md 0;

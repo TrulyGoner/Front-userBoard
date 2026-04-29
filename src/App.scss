@@ -33,6 +33,16 @@
   white-space: nowrap;
 }
 
+.app__logo-link {
+  color: inherit;
+  text-decoration: none;
+  transition: opacity $transition-fast;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
 .app__user {
   @include flex-center;
   gap: $spacing-md;
@@ -48,12 +58,22 @@
   }
 }
 
+.app__user-actions {
+  display: flex;
+  gap: $spacing-sm;
+  flex-wrap: wrap;
+
+  button {
+    white-space: nowrap;
+  }
+}
+
 .app__main {
   flex: 1;
   display: flex;
   flex-direction: column;
   max-width: 100%;
-  overflow: auto;
+  overflow: hidden;
 }
 
 @include media-up('md') {

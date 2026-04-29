@@ -1,0 +1,95 @@
+@use '@shared/styles/variables' as *;
+
+.task-filters {
+  background: white;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  margin-bottom: $spacing-lg;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.task-filters__section {
+  margin-bottom: $spacing-lg;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  h3 {
+    margin: 0 0 $spacing-md 0;
+    font-size: $fs-base;
+    color: $color-text;
+    border-bottom: 1px solid $color-border;
+    padding-bottom: $spacing-sm;
+  }
+}
+
+.task-filters__group {
+  @include flex-column;
+  gap: $spacing-sm;
+  margin-bottom: $spacing-md;
+}
+
+.task-filters__label {
+  font-weight: $fw-medium;
+  font-size: $fs-sm;
+  color: $color-text;
+}
+
+.task-filters__checkboxes {
+  margin-bottom: $spacing-md;
+}
+
+.task-filters__options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-md;
+  margin-top: $spacing-sm;
+}
+
+.task-filters__checkbox {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  cursor: pointer;
+  font-size: $fs-sm;
+  color: $color-text;
+
+  input[type="checkbox"] {
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
+  }
+
+  &:hover {
+    color: $color-primary;
+  }
+}
+
+.task-filters__pagination {
+  border-top: 1px solid $color-border;
+  padding-top: $spacing-md;
+  margin-top: $spacing-md;
+}
+
+.task-filters__pagination-info {
+  font-size: $fs-sm;
+  color: $color-text-secondary;
+  margin-bottom: $spacing-md;
+}
+
+.task-filters__pagination-buttons {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.task-filters__pagination-current {
+  font-size: $fs-sm;
+  font-weight: $fw-medium;
+  color: $color-text;
+  min-width: 120px;
+  text-align: center;
+}
