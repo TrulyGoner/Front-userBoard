@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Routes, Route, Navigate, Link } from 'react-router-dom';
 import type { RootState, AppDispatch } from '@store';
-import { logout } from '@store/slices/authSlice';
+import { logout, restoreAuthFromStorage } from '@store/slices/authSlice';
 import { Login, Register, ChangePassword } from '@pages/auth';
 import { TaskList, TaskDetail, TaskForm } from '@pages/tasks';
 import { UserManagement } from '@pages/admin';
@@ -13,10 +13,21 @@ function App() {
   const { user } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch<AppDispatch>();
   const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  useEffect(() => {
+    dispatch(restoreAuthFromStorage()).finally(() => {
+      setIsInitialized(true);
+    });
+  }, [dispatch]);
 
   const handleLogout = () => {
     dispatch(logout());
   };
+
+  if (!isInitialized) {
+    return null;
+  }
 
   return (
     <div className="app">

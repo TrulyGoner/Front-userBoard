@@ -2,6 +2,8 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { authAPI, apiService } from '@shared/services';
 import type { AuthState } from '@shared/types';
 
+const STORAGE_KEY = 'auth_session';
+
 const initialState: AuthState = {
   user: null,
   token: null,
@@ -14,6 +16,10 @@ export const login = createAsyncThunk(
   async ({ nickname, password }: { nickname: string; password: string }) => {
     const data = await authAPI.login({ nickname, password });
     apiService.setToken(data.accessToken);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      token: data.accessToken,
+      user: data.user,
+    }));
     return data;
   }
 );
@@ -23,7 +29,30 @@ export const register = createAsyncThunk(
   async ({ nickname, password, email }: { nickname: string; password: string; email?: string }) => {
     const data = await authAPI.register({ nickname, password, email });
     apiService.setToken(data.accessToken);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      token: data.accessToken,
+      user: data.user,
+    }));
     return data;
+  }
+);
+
+export const restoreAuthFromStorage = createAsyncThunk(
+  'auth/restoreFromStorage',
+  async () => {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (!stored) {
+        return null;
+      }
+      const { token, user } = JSON.parse(stored);
+      // Set token in API service for subsequent requests
+      apiService.setToken(token);
+      return { accessToken: token, user };
+    } catch (error) {
+      localStorage.removeItem(STORAGE_KEY);
+      return null;
+    }
   }
 );
 
@@ -35,6 +64,8 @@ const authSlice = createSlice({
       state.user = null;
       state.token = null;
       state.error = null;
+      localStorage.removeItem(STORAGE_KEY);
+      apiService.clearToken();
     },
     clearError: (state) => {
       state.error = null;
@@ -68,7 +99,12 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = action.error.message || 'Registration failed';
       })
-;
+      .addCase(restoreAuthFromStorage.fulfilled, (state, action) => {
+        if (action.payload) {
+          state.user = action.payload.user;
+          state.token = action.payload.accessToken;
+        }
+      });
   },
 });
 

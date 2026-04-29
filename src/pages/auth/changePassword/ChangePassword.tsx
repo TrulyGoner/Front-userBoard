@@ -48,7 +48,7 @@ export const ChangePassword = ({ onClose }: ChangePasswordProps) => {
     setLoading(true);
     try {
       await authAPI.changePassword({
-        oldPassword: data.currentPassword,
+        currentPassword: data.currentPassword,
         newPassword: data.newPassword,
       });
       setSuccess(true);
