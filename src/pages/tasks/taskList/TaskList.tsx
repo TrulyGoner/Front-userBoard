@@ -111,6 +111,11 @@ export const TaskList = () => {
                 Kanban
               </Button>
             </div>
+            <Link to="/tasks/new">
+              <Button variant="primary" size="sm">
+                + Create Task
+              </Button>
+            </Link>
           </div>
 
           {loading && <div className="task-list__loading">Loading...</div>}
@@ -135,6 +140,15 @@ export const TaskList = () => {
                         </span>
                       )}
                     </div>
+                    {task.tags && task.tags.length > 0 && (
+                      <div className="task-list__tags">
+                        {task.tags.map((tag) => (
+                          <span key={tag.id} className="task-list__tag">
+                            {tag.name}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                     <div className="task-list__meta">
                       <span className={`task-list__status task-list__status--${task.status.toLowerCase()}`}>
                         {task.status}

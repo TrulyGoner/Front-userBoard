@@ -1,10 +1,10 @@
 @use '@shared/styles/variables' as *;
 
 .tags-panel {
-  background: $color-bg-tertiary;
-  border-radius: $radius-md;
-  padding: $spacing-md;
-  margin-top: $spacing-md;
+  background: $color-bg;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  box-shadow: $shadow-md;
 
   h3 {
     margin: 0 0 $spacing-md 0;
@@ -69,14 +69,15 @@
 
   &__add-form {
     display: flex;
+    flex-direction: column;
     gap: $spacing-sm;
 
     input {
-      flex: 1;
-      min-width: 150px;
+      width: 100%;
     }
 
     button {
+      width: 100%;
       white-space: nowrap;
     }
   }

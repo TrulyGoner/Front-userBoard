@@ -2,9 +2,12 @@
 
 .auth-container {
   @include flex-center;
-  min-height: 100vh;
+  flex: 1;
+  width: 100%;
   padding: $spacing-md;
   background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .auth-form {
@@ -12,14 +15,33 @@
   border-radius: $radius-xl;
   padding: $spacing-2xl;
   width: 100%;
-  max-width: 400px;
+  max-width: 500px;
   box-shadow: $shadow-xl;
-  margin-top: $spacing-md;
 
-  h2 {
-    text-align: center;
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
     margin-bottom: $spacing-xl;
-    color: $color-text;
+
+    h2 {
+      margin: 0;
+      color: $color-text;
+      flex: 1;
+      text-align: center;
+    }
+  }
+
+  &__back {
+    font-size: $fs-2xl;
+    color: $color-text-secondary;
+    line-height: 1;
+    transition: color $transition-fast;
+    flex-shrink: 0;
+
+    &:hover {
+      color: $color-primary;
+    }
   }
 
   &__form {

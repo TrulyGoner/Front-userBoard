@@ -1,7 +1,8 @@
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import { createTask, updateTask } from '@store/slices/tasksSlice';
+import { createTask, updateTask, fetchTask } from '@store/slices/tasksSlice';
 import type { RootState, AppDispatch } from '@store';
 import { Button, Input, Select, ErrorAlert } from '@shared/ui';
 import { useErrorHandling } from '@shared/hooks';
@@ -14,7 +15,7 @@ export const TaskForm = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { loading, currentTask } = useSelector((state: RootState) => state.tasks);
   const { error, clearError } = useErrorHandling('tasks');
-  const { register, handleSubmit, formState: { errors } } = useForm<TaskFormData>({
+  const { register, handleSubmit, formState: { errors }, reset } = useForm<TaskFormData>({
     defaultValues: currentTask ? {
       title: currentTask.title,
       description: currentTask.description,
@@ -23,6 +24,24 @@ export const TaskForm = () => {
       visibility: currentTask.visibility,
     } : {}
   });
+
+  useEffect(() => {
+    if (id && !currentTask) {
+      dispatch(fetchTask(id));
+    }
+  }, [id, dispatch, currentTask]);
+
+  useEffect(() => {
+    if (currentTask && id) {
+      reset({
+        title: currentTask.title,
+        description: currentTask.description,
+        status: currentTask.status,
+        priority: currentTask.priority,
+        visibility: currentTask.visibility,
+      });
+    }
+  }, [currentTask, id, reset]);
 
   const onSubmit = (data: TaskFormData) => {
     if (id) {

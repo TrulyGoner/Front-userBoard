@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
+import { Link } from 'react-router-dom';
 import type { RootState, AppDispatch } from '@store';
 import { register as registerUser } from '@store/slices/authSlice';
 import { Button, Input, ErrorAlert } from '@shared/ui';
@@ -25,7 +26,10 @@ export const Register = () => {
   return (
     <div className="auth-container">
       <div className="auth-form">
-        <h2>Register</h2>
+        <div className="auth-form__header">
+          <Link to="/login" className="auth-form__back">←</Link>
+          <h2>Register</h2>
+        </div>
         {error && <ErrorAlert error={error} onClear={clearError} />}
         <form onSubmit={handleSubmit(onSubmit)} className="auth-form__form">
           <Input

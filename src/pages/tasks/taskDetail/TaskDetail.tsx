@@ -50,17 +50,25 @@ export const TaskDetail = () => {
         </div>
       </div>
       <h2>{currentTask.title}</h2>
-      <div className="task-detail__info">
-        <p><strong>Status:</strong> {currentTask.status}</p>
-        <p><strong>Priority:</strong> {currentTask.priority}</p>
-        <p><strong>Visibility:</strong> {currentTask.visibility}</p>
-        {currentTask.creator && <p><strong>Created by:</strong> {currentTask.creator.nickname}</p>}
-        {currentTask.description && (
-          <p><strong>Description:</strong> {currentTask.description}</p>
-        )}
+      
+      <div className="task-detail__content">
+        <div className="task-detail__main">
+          <div className="task-detail__info">
+            <p><strong>Status:</strong> {currentTask.status}</p>
+            <p><strong>Priority:</strong> {currentTask.priority}</p>
+            <p><strong>Visibility:</strong> {currentTask.visibility}</p>
+            {currentTask.creator && <p><strong>Created by:</strong> {currentTask.creator.nickname}</p>}
+            {currentTask.description && (
+              <p><strong>Description:</strong> {currentTask.description}</p>
+            )}
+          </div>
+        </div>
+        
+        <aside className="task-detail__sidebar">
+          {currentTask && <AssignmentPanel task={currentTask} currentUserId={user?.id} />}
+          {currentTask && <TagsPanel task={currentTask} />}
+        </aside>
       </div>
-      {currentTask && <AssignmentPanel task={currentTask} currentUserId={user?.id} />}
-      {currentTask && <TagsPanel task={currentTask} />}
     </div>
   );
 };
