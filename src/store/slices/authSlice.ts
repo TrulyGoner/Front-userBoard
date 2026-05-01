@@ -46,7 +46,6 @@ export const restoreAuthFromStorage = createAsyncThunk(
         return null;
       }
       const { token, user } = JSON.parse(stored);
-      // Set token in API service for subsequent requests
       apiService.setToken(token);
       return { accessToken: token, user };
     } catch (error) {
