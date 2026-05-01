@@ -20,20 +20,21 @@ export interface Task {
   priority: 'LOW' | 'MEDIUM' | 'HIGH';
   visibility: 'ONLY_ME' | 'LIST' | 'ANYONE';
   creatorId: string;
+  creator?: User;
   assigneeId?: string;
+  assignee?: User;
   assignmentStatus?: 'NONE' | 'PENDING' | 'APPROVED' | 'REJECTED';
+  assignedById?: string;
+  assignedBy?: User;
   createdAt: string;
   updatedAt: string;
-  tags: Tag[];
+  tags?: Tag[];
 }
 
 export interface Tag {
   id: string;
   name: string;
 }
-
-
-
 
 export interface AuthResponse {
   accessToken: string;

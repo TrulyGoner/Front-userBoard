@@ -1,0 +1,103 @@
+@use '@shared/styles/variables' as *;
+
+.task-card {
+  background: white;
+  border-radius: $radius-md;
+  padding: $spacing-md;
+  text-decoration: none;
+  color: inherit;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all $transition-fast;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-drag: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    cursor: grabbing;
+  }
+
+  &--dragging {
+    opacity: 0.5;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    transform: rotate(5deg) scale(0.95);
+    cursor: grabbing;
+  }
+
+  &__header {
+    margin-bottom: $spacing-sm;
+
+    h4 {
+      margin: 0;
+      font-size: $fs-sm;
+      font-weight: $fw-bold;
+      color: $color-primary;
+      @include truncate;
+    }
+  }
+
+  &__description {
+    margin: 0 0 $spacing-sm 0;
+    font-size: $fs-xs;
+    color: $color-text-secondary;
+    line-height: 1.4;
+  }
+
+  &__meta {
+    display: flex;
+    gap: $spacing-xs;
+    flex-wrap: wrap;
+    margin-bottom: $spacing-sm;
+  }
+
+  &__badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: $radius-sm;
+    font-size: $fs-xs;
+    font-weight: $fw-medium;
+
+    &--priority-low {
+      background-color: #d4edda;
+      color: #155724;
+    }
+
+    &--priority-medium {
+      background-color: #fff3cd;
+      color: #856404;
+    }
+
+    &--priority-high {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+
+    &--assignee {
+      background-color: #e3f2fd;
+      color: #1976d2;
+    }
+  }
+
+  &__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-xs;
+    margin-top: $spacing-sm;
+  }
+
+  &__tag {
+    display: inline-block;
+    padding: 2px 8px;
+    background-color: $color-border;
+    color: $color-text-secondary;
+    border-radius: $radius-sm;
+    font-size: $fs-xs;
+  }
+}

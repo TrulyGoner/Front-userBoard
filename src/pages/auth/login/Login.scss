@@ -1,0 +1,35 @@
+@use '@shared/styles/variables' as *;
+
+.auth-container {
+  @include flex-center;
+  flex: 1;
+  width: 100%;
+  padding: $spacing-md;
+  background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.auth-form {
+  background: $color-bg;
+  border-radius: $radius-xl;
+  padding: $spacing-2xl;
+  width: 100%;
+  max-width: 500px;
+  box-shadow: $shadow-xl;
+
+  h2 {
+    text-align: center;
+    margin-bottom: $spacing-xl;
+    color: $color-text;
+  }
+
+  &__form {
+    @include flex-column;
+    gap: $spacing-lg;
+  }
+
+  @include media-up('md') {
+    padding: $spacing-2xl * 1.5;
+  }
+}

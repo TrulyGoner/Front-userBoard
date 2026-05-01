@@ -1,0 +1,1 @@
+export { AssignmentPanel } from './AssignmentPanel';

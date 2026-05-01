@@ -15,7 +15,6 @@
     cursor: not-allowed;
   }
 
-  // Variants
   &--primary {
     background-color: $color-primary;
     color: white;
@@ -59,7 +58,6 @@
     }
   }
 
-  // Sizes
   &--sm {
     padding: $spacing-xs $spacing-sm;
     font-size: $fs-xs;
@@ -75,7 +73,6 @@
     font-size: $fs-base;
   }
 
-  // Full width
   &--full-width {
     width: 100%;
   }

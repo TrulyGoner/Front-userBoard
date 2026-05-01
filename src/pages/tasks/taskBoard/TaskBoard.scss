@@ -1,0 +1,121 @@
+@use '@shared/styles/variables' as *;
+
+.task-board {
+  padding: $spacing-lg;
+  max-width: 100%;
+  overflow-x: auto;
+
+  &__header {
+    @include flex-between;
+    margin-bottom: $spacing-xl;
+    flex-wrap: wrap;
+    gap: $spacing-md;
+
+    a {
+      text-decoration: none;
+    }
+  }
+
+  &__title-section {
+    display: flex;
+    align-items: center;
+    gap: $spacing-lg;
+    flex-wrap: wrap;
+
+    h2 {
+      margin: 0;
+    }
+  }
+
+  &__view-toggle {
+    display: flex;
+    gap: $spacing-sm;
+
+    a {
+      text-decoration: none;
+    }
+
+    button {
+      white-space: nowrap;
+    }
+  }
+
+  &__loading {
+    text-align: center;
+    padding: $spacing-xl;
+    color: $color-text-secondary;
+    font-size: $fs-lg;
+  }
+
+  &__columns {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: $spacing-lg;
+    min-height: 600px;
+
+    @media (max-width: 1200px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+      gap: $spacing-md;
+    }
+  }
+
+  &__column {
+    background: $color-bg-tertiary;
+    border-radius: $radius-lg;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: background-color $transition-fast;
+  }
+
+  &__column-header {
+    background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+    color: white;
+    padding: $spacing-md;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    h3 {
+      margin: 0;
+      font-size: $fs-base;
+      font-weight: $fw-bold;
+    }
+  }
+
+  &__column-count {
+    display: inline-block;
+    background: rgba(white, 0.2);
+    padding: $spacing-xs $spacing-sm;
+    border-radius: $radius-sm;
+    font-size: $fs-sm;
+    font-weight: $fw-bold;
+  }
+
+  &__tasks {
+    flex: 1;
+    padding: $spacing-md;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+    min-height: 300px;
+    transition: background-color $transition-fast;
+
+    &.drag-over {
+      background-color: rgba($color-primary, 0.05);
+      border: 2px dashed $color-primary;
+    }
+  }
+
+  &__empty {
+    text-align: center;
+    color: $color-text-secondary;
+    padding: $spacing-lg;
+    font-size: $fs-sm;
+  }
+}
