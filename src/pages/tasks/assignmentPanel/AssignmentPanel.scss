@@ -106,4 +106,44 @@
       width: 100%;
     }
   }
+
+  &__reassign-section {
+    margin-top: $spacing-md;
+  }
+
+  &__reassign-actions {
+    display: flex;
+    gap: $spacing-sm;
+
+    button {
+      flex: 1;
+    }
+  }
+}
+
+.assignment-modal {
+  background: $color-bg;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  min-width: 400px;
+
+  h3 {
+    margin: 0 0 $spacing-md 0;
+    font-size: $fs-base;
+    color: $color-text;
+  }
+
+  select {
+    width: 100%;
+    margin-bottom: $spacing-md;
+  }
+
+  &__actions {
+    display: flex;
+    gap: $spacing-sm;
+
+    button {
+      flex: 1;
+    }
+  }
 }

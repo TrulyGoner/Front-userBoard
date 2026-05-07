@@ -3,24 +3,31 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchTasks, updateTaskStatus } from '@store/slices/tasksSlice';
 import type { RootState, AppDispatch } from '@store';
 import { Link } from 'react-router-dom';
+import { canMoveTask } from '@shared/utils';
 import { Button } from '@shared/ui';
 import { DraggableTaskCard } from './DraggableTaskCard';
 import './TaskBoard.scss';
 
-const STATUSES = ['TODO', 'IN_PROGRESS', 'DONE'];
+const TASK_STATUSES = {
+  TODO: 'TODO',
+  IN_PROGRESS: 'IN_PROGRESS',
+  DONE: 'DONE',
+} as const;
+
+const STATUSES = [TASK_STATUSES.TODO, TASK_STATUSES.IN_PROGRESS, TASK_STATUSES.DONE] as const;
 
 export const TaskBoard = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { tasks, loading } = useSelector((state: RootState) => state.tasks);
-  const { token } = useSelector((state: RootState) => state.auth);
+  const { token, user } = useSelector((state: RootState) => state.auth);
   const [draggedTaskId, setDraggedTaskId] = useState<string | null>(null);
   const [draggedTaskStatus, setDraggedTaskStatus] = useState<string | null>(null);
   const [dragOverStatus, setDragOverStatus] = useState<string | null>(null);
 
   const filteredTasks = useMemo(() => ({
-    TODO: tasks.filter(t => t.status === 'TODO'),
-    IN_PROGRESS: tasks.filter(t => t.status === 'IN_PROGRESS'),
-    DONE: tasks.filter(t => t.status === 'DONE'),
+    TODO: tasks.filter(t => t.status === TASK_STATUSES.TODO),
+    IN_PROGRESS: tasks.filter(t => t.status === TASK_STATUSES.IN_PROGRESS),
+    DONE: tasks.filter(t => t.status === TASK_STATUSES.DONE),
   }), [tasks]);
 
   useEffect(() => {
@@ -29,7 +36,13 @@ export const TaskBoard = () => {
   }, [dispatch, token]);
 
   const handleDragStart = (taskId: string, status: string, e: React.DragEvent<HTMLDivElement>) => {
-    
+    const task = tasks.find(t => t.id === taskId);
+    if (!canMoveTask(task || null, user || null)) {
+      e.preventDefault();
+      console.warn('⚠️ Permission denied: You can only move tasks assigned to you or created by you');
+      return;
+    }
+
     if (!e.dataTransfer) {
       return;
     }
@@ -38,7 +51,7 @@ export const TaskBoard = () => {
     e.dataTransfer.setData('text/plain', taskId);
     
     setDraggedTaskId(taskId);
-    setDraggedTaskStatus(status);;
+    setDraggedTaskStatus(status);
   };
 
   const handleDragOver = (status: string, e: React.DragEvent<HTMLDivElement>) => {
@@ -53,7 +66,6 @@ export const TaskBoard = () => {
     e.preventDefault();
     setDragOverStatus(null);
 
-    
     if (!draggedTaskId || draggedTaskStatus === newStatus) {
       console.warn('⚠️ Drop cancelled:', { draggedTaskId, sameStatus: draggedTaskStatus === newStatus });
       setDraggedTaskId(null);
@@ -61,7 +73,14 @@ export const TaskBoard = () => {
       return;
     }
 
-    
+    const task = tasks.find(t => t.id === draggedTaskId);
+    if (!canMoveTask(task || null, user || null)) {
+      console.warn('⚠️ Permission denied: You cannot move this task');
+      setDraggedTaskId(null);
+      setDraggedTaskStatus(null);
+      return;
+    }
+
     dispatch(updateTaskStatus({
       id: draggedTaskId,
       status: newStatus as 'TODO' | 'IN_PROGRESS' | 'DONE'
@@ -102,7 +121,7 @@ export const TaskBoard = () => {
           </div>
         </div>
         <Link to="/tasks/new">
-          <Button variant="primary">Create New Task</Button>
+          <Button variant="primary" size="sm">Create New Task</Button>
         </Link>
       </div>
 

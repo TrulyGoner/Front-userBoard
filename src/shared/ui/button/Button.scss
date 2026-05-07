@@ -4,6 +4,7 @@
 .btn {
   @include focus-outline;
   padding: $spacing-sm $spacing-md;
+  border: none;
   border-radius: $radius-lg;
   font-weight: $fw-medium;
   font-size: $fs-sm;

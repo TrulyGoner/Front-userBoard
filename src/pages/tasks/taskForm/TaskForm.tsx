@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { createTask, updateTask, fetchTask } from '@store/slices/tasksSlice';
 import type { RootState, AppDispatch } from '@store';
+import { canEditTask } from '@shared/utils';
 import { Button, Input, Select, ErrorAlert } from '@shared/ui';
 import { useErrorHandling } from '@shared/hooks';
 import { STATUS_OPTIONS, PRIORITY_OPTIONS, VISIBILITY_OPTIONS, type TaskFormData } from '../shared';
@@ -14,6 +15,7 @@ export const TaskForm = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const { loading, currentTask } = useSelector((state: RootState) => state.tasks);
+  const { user } = useSelector((state: RootState) => state.auth);
   const { error, clearError } = useErrorHandling('tasks');
   const { register, handleSubmit, formState: { errors }, reset } = useForm<TaskFormData>({
     defaultValues: currentTask ? {
@@ -43,7 +45,15 @@ export const TaskForm = () => {
     }
   }, [currentTask, id, reset]);
 
+  const isEditing = !!id;
+  const hasEditPermission = isEditing ? canEditTask(currentTask, user) : true;
+
   const onSubmit = (data: TaskFormData) => {
+    if (!hasEditPermission) {
+      console.error('Permission denied: You cannot edit this task');
+      return;
+    }
+
     if (id) {
       dispatch(updateTask({ id, task: data }));
     } else {
@@ -51,6 +61,25 @@ export const TaskForm = () => {
     }
     navigate('/tasks');
   };
+
+  if (isEditing && !hasEditPermission) {
+    return (
+      <div className="task-form">
+        <div className="task-form__container">
+          <ErrorAlert 
+            error="You don't have permission to edit this task. Only the creator, assignee, or admin can edit it."
+            onClear={() => navigate('/tasks')}
+          />
+          <Button 
+            variant="secondary" 
+            onClick={() => navigate('/tasks')}
+          >
+            Back to Tasks
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="task-form">

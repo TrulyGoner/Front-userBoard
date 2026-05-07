@@ -52,40 +52,75 @@
 
   &__header {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
     margin-bottom: $spacing-lg;
-    padding-bottom: $spacing-md;
-    border-bottom: 1px solid $color-border;
   }
 
   &__view-controls {
     display: flex;
+    justify-content: space-between;
+    align-items: center;
     gap: $spacing-sm;
+    width: 100%;
+
+    a {
+      text-decoration: none;
+    }
 
     button {
       padding: $spacing-sm $spacing-md;
       font-size: $fs-sm;
       cursor: pointer;
-      border: 1px solid $color-border;
+      border: none;
       border-radius: $radius-md;
       transition: all $transition-fast;
       background: $color-bg;
       color: $color-text;
 
       &:hover {
-        border-color: $color-primary;
         color: $color-primary;
       }
 
       &[class*="primary"] {
         background: $color-primary;
         color: white;
-        border-color: $color-primary;
 
         &:hover {
           background: $color-primary-dark;
-          border-color: $color-primary-dark;
+        }
+      }
+    }
+  }
+
+  &__view-toggle {
+    display: flex;
+    gap: $spacing-sm;
+
+    a {
+      text-decoration: none;
+    }
+
+    button {
+      padding: $spacing-sm $spacing-md;
+      font-size: $fs-sm;
+      cursor: pointer;
+      border: none;
+      border-radius: $radius-md;
+      transition: all $transition-fast;
+      background: $color-bg;
+      color: $color-text;
+
+      &:hover {
+        color: $color-primary;
+      }
+
+      &[class*="primary"] {
+        background: $color-primary;
+        color: white;
+
+        &:hover {
+          background: $color-primary-dark;
         }
       }
     }

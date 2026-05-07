@@ -2,7 +2,7 @@ import { useReducer } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { assignTask, approveAssignment, rejectAssignment } from '@store/slices/tasksSlice';
 import type { RootState, AppDispatch } from '@store';
-import { Button, Select, ErrorAlert } from '@shared/ui';
+import { Button, Select, ErrorAlert, Modal } from '@shared/ui';
 import { useUsers } from '@shared/hooks';
 import type { Task } from '@shared/types';
 import './AssignmentPanel.scss';
@@ -16,6 +16,7 @@ interface AssignmentState {
   selectedUserId: string;
   rejectReason: string;
   showRejectForm: boolean;
+  showAssignmentModal: boolean;
   error: string | null;
 }
 
@@ -23,6 +24,7 @@ type AssignmentAction =
   | { type: 'SET_SELECTED_USER_ID'; payload: string }
   | { type: 'SET_REJECT_REASON'; payload: string }
   | { type: 'TOGGLE_REJECT_FORM' }
+  | { type: 'TOGGLE_ASSIGNMENT_MODAL' }
   | { type: 'SET_ERROR'; payload: string | null }
   | { type: 'RESET_REJECT_FORM' };
 
@@ -30,6 +32,7 @@ const initialState = (assigneeId?: string): AssignmentState => ({
   selectedUserId: assigneeId || '',
   rejectReason: '',
   showRejectForm: false,
+  showAssignmentModal: false,
   error: null,
 });
 
@@ -41,6 +44,8 @@ const assignmentReducer = (state: AssignmentState, action: AssignmentAction): As
       return { ...state, rejectReason: action.payload };
     case 'TOGGLE_REJECT_FORM':
       return { ...state, showRejectForm: !state.showRejectForm };
+    case 'TOGGLE_ASSIGNMENT_MODAL':
+      return { ...state, showAssignmentModal: !state.showAssignmentModal };
     case 'SET_ERROR':
       return { ...state, error: action.payload };
     case 'RESET_REJECT_FORM':
@@ -53,11 +58,13 @@ const assignmentReducer = (state: AssignmentState, action: AssignmentAction): As
 export const AssignmentPanel = ({ task, currentUserId }: AssignmentPanelProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const { loading } = useSelector((state: RootState) => state.tasks);
+  const { user: currentUser } = useSelector((state: RootState) => state.auth);
   const { users, error: usersError } = useUsers();
   const [state, dispatchAction] = useReducer(assignmentReducer, task.assigneeId, initialState);
 
   const isCreator = currentUserId === task.creatorId;
   const isAssignee = currentUserId === task.assigneeId;
+  const isAdmin = currentUser?.role === 'ADMIN';
   const isPending = task.assignmentStatus === 'PENDING';
 
   const handleAssign = () => {
@@ -123,6 +130,32 @@ export const AssignmentPanel = ({ task, currentUserId }: AssignmentPanelProps) =
         </div>
       )}
 
+      {(isCreator || isAdmin) && task.assignee && (
+        <div className="assignment-panel__reassign-section">
+          <div className="assignment-panel__reassign-actions">
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => {
+                dispatchAction({ type: 'SET_SELECTED_USER_ID', payload: task.assigneeId || '' });
+                dispatchAction({ type: 'TOGGLE_ASSIGNMENT_MODAL' });
+              }}
+              disabled={loading}
+            >
+              Change Assignment
+            </Button>
+            <Button
+              variant="danger"
+              size="sm"
+              onClick={() => dispatch(assignTask({ id: task.id, assigneeId: '' }))}
+              disabled={loading}
+            >
+              Unassign
+            </Button>
+          </div>
+        </div>
+      )}
+
       {!task.assignee && currentUserId && !isCreator && (
         <Button 
           variant="secondary" 
@@ -184,6 +217,40 @@ export const AssignmentPanel = ({ task, currentUserId }: AssignmentPanelProps) =
           </div>
         </div>
       )}
+
+      <Modal 
+        isOpen={state.showAssignmentModal}
+        onClose={() => dispatchAction({ type: 'TOGGLE_ASSIGNMENT_MODAL' })}
+      >
+        <div className="assignment-modal">
+          <h3>Change Assignment</h3>
+          <Select
+            label="Select new user to assign"
+            options={users.map(u => ({ value: u.id, label: u.nickname }))}
+            value={state.selectedUserId}
+            onChange={(e) => dispatchAction({ type: 'SET_SELECTED_USER_ID', payload: e.target.value })}
+          />
+          <div className="assignment-modal__actions">
+            <Button 
+              variant="primary" 
+              onClick={() => {
+                handleAssign();
+                dispatchAction({ type: 'TOGGLE_ASSIGNMENT_MODAL' });
+              }}
+              disabled={!state.selectedUserId || loading}
+            >
+              Confirm
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={() => dispatchAction({ type: 'TOGGLE_ASSIGNMENT_MODAL' })}
+              disabled={loading}
+            >
+              Cancel
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };

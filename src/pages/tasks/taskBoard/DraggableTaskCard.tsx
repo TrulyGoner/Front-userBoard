@@ -66,7 +66,7 @@ export const DraggableTaskCard = ({
         )}
       </div>
 
-      {task.tags && task.tags.length > 0 && (
+      {task.tags?.length && (
         <div className="task-card__tags">
           {task.tags.map(tag => (
             <span key={tag.id} className="task-card__tag">

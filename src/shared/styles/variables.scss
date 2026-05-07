@@ -18,6 +18,17 @@ $color-text-tertiary: #9ca3af;
 $color-border: #e5e7eb;
 $color-border-dark: #d1d5db;
 
+$color-error-bg: #f8d7da;
+$color-error-text: #721c24;
+$color-badge-admin: #e7d4f5;
+$color-badge-admin-text: #4a148c;
+$color-badge-user: #e3f2fd;
+$color-badge-user-text: #1565c0;
+$color-status-active-bg: #d4edda;
+$color-status-active-text: #155724;
+$color-status-banned-bg: #f8d7da;
+$color-status-banned-text: #721c24;
+
 $spacing-xs: 0.25rem;  // 4px
 $spacing-sm: 0.5rem;   // 8px
 $spacing-md: 1rem;     // 16px
@@ -43,6 +54,12 @@ $fw-normal: 400;
 $fw-medium: 500;
 $fw-semibold: 600;
 $fw-bold: 700;
+
+
+$max-width-page: 1200px;
+$max-width-form: 500px;
+$max-width-input: 400px;
+$border-width-thick: 2px;
 
 $shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 $shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);

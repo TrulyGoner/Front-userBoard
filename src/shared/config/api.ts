@@ -25,6 +25,8 @@ export const API_ENDPOINTS = {
     USERS_LIST: '/admin/users',
     BAN_USER: (userId: string) => `/admin/users/${userId}/ban`,
     UNBAN_USER: (userId: string) => `/admin/users/${userId}/unban`,
+    GRANT_ADMIN: (userId: string) => `/admin/users/${userId}/grant-admin`,
+    REVOKE_ADMIN: (userId: string) => `/admin/users/${userId}/revoke-admin`,
     LIST_BLOCKS: '/admin/blocks',
     REMOVE_BLOCK: '/admin/blocks',
   },

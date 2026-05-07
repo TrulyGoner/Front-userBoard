@@ -28,13 +28,31 @@ const initialState: TasksState = {
   },
 };
 
+const updateCurrentTask = (state: TasksState, payload: Task) => {
+  if (state.currentTask?.id === payload.id) {
+    state.currentTask = payload;
+  }
+};
+
+const updateTaskInList = (state: TasksState, payload: Task) => {
+  const index = state.tasks.findIndex(task => task.id === payload.id);
+  if (index !== -1) {
+    state.tasks[index] = payload;
+  }
+};
+
+const updateTaskEverywhere = (state: TasksState, payload: Task) => {
+  updateTaskInList(state, payload);
+  updateCurrentTask(state, payload);
+};
+
 export const fetchTasks = createAsyncThunk(
   'tasks/fetchTasks',
   async (params: { page?: number; pageSize?: number; status?: string | string[]; priority?: string | string[]; tag?: string; q?: string; sort?: string; order?: string; mine?: string }, { getState }) => {
     const state = getState() as RootState;
 
     const queryParams = new URLSearchParams();
-    
+
     if (params.page) queryParams.append('page', params.page.toString());
     if (params.pageSize) queryParams.append('pageSize', params.pageSize.toString());
     if (params.sort) queryParams.append('sort', params.sort);
@@ -52,7 +70,7 @@ export const fetchTasks = createAsyncThunk(
       const priorityList = Array.isArray(params.priority) ? params.priority : [params.priority];
       priorityList.forEach(p => queryParams.append('priority', p));
     }
-    
+
     const response = await axios.get(`${API_BASE_URL}${API_ENDPOINTS.TASKS.LIST}?${queryParams.toString()}`, {
       headers: { Authorization: `Bearer ${state.auth.token}` },
     });
@@ -155,7 +173,7 @@ export const updateTaskStatus = createAsyncThunk(
               status,
               priority: task.priority,
               visibility: task.visibility,
-              viewerUserIds: task.viewers?.map((v) => v.id) || []
+              viewerUserIds: task.viewers?.map((v) => v.id) || [],
             },
             { headers: { Authorization: `Bearer ${state.auth.token}` } }
           );
@@ -166,7 +184,7 @@ export const updateTaskStatus = createAsyncThunk(
           return rejectWithValue(innerAxiosError.response?.data?.message || innerAxiosError.message);
         }
       }
-      
+
       console.error('Task status update error:', axiosError.response?.data || axiosError.message);
       return rejectWithValue(axiosError.response?.data || axiosError.message);
     }
@@ -200,6 +218,7 @@ const tasksSlice = createSlice({
         state.loading = false;
         state.error = action.error.message || 'Failed to fetch tasks';
       })
+
       .addCase(fetchTask.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -212,6 +231,7 @@ const tasksSlice = createSlice({
         state.loading = false;
         state.error = action.error.message || 'Failed to fetch task';
       })
+
       .addCase(createTask.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -224,92 +244,73 @@ const tasksSlice = createSlice({
         state.loading = false;
         state.error = action.error.message || 'Failed to create task';
       })
+
       .addCase(updateTask.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(updateTask.fulfilled, (state, action) => {
         state.loading = false;
-        const index = state.tasks.findIndex(task => task.id === action.payload.id);
-        if (index !== -1) {
-          state.tasks[index] = action.payload;
-        }
-        if (state.currentTask?.id === action.payload.id) {
-          state.currentTask = action.payload;
-        }
+        updateTaskEverywhere(state, action.payload);
       })
       .addCase(updateTask.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || 'Failed to update task';
       })
+
       .addCase(assignTask.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(assignTask.fulfilled, (state, action) => {
         state.loading = false;
-        if (state.currentTask?.id === action.payload.id) {
-          state.currentTask = action.payload;
-        }
+        updateCurrentTask(state, action.payload);
       })
       .addCase(assignTask.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || 'Failed to assign task';
       })
+
       .addCase(approveAssignment.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(approveAssignment.fulfilled, (state, action) => {
         state.loading = false;
-        if (state.currentTask?.id === action.payload.id) {
-          state.currentTask = action.payload;
-        }
+        updateCurrentTask(state, action.payload);
       })
       .addCase(approveAssignment.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || 'Failed to approve assignment';
       })
+
       .addCase(rejectAssignment.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(rejectAssignment.fulfilled, (state, action) => {
         state.loading = false;
-        if (state.currentTask?.id === action.payload.id) {
-          state.currentTask = action.payload;
-        }
+        updateCurrentTask(state, action.payload);
       })
       .addCase(rejectAssignment.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || 'Failed to reject assignment';
       })
+
       .addCase(updateTaskStatus.pending, (state, action) => {
         state.error = null;
-        // Optimistic update: immediately update task status in UI
-        const taskId = action.meta.arg.id;
-        const newStatus = action.meta.arg.status;
-        const index = state.tasks.findIndex(task => task.id === taskId);
-        if (index !== -1) {
-          state.tasks[index].status = newStatus;
-        }
-        if (state.currentTask?.id === taskId) {
-          state.currentTask.status = newStatus;
+        const { id, status } = action.meta.arg;
+        const task = state.tasks.find(t => t.id === id);
+        if (task) task.status = status;
+        if (state.currentTask?.id === id) {
+          state.currentTask.status = status;
         }
       })
       .addCase(updateTaskStatus.fulfilled, (state, action) => {
-        const index = state.tasks.findIndex(task => task.id === action.payload.id);
-        if (index !== -1) {
-          state.tasks[index] = action.payload;
-        }
-        if (state.currentTask?.id === action.payload.id) {
-          state.currentTask = action.payload;
-        }
+        updateTaskEverywhere(state, action.payload);
       })
       .addCase(updateTaskStatus.rejected, (state, action) => {
         state.error = action.error.message || 'Failed to update task status';
-        // Revert optimistic update on error - re-fetch tasks from API
-        // This will be handled by component-level error handling or user retry
       });
   },
 });

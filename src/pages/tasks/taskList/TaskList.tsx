@@ -96,26 +96,28 @@ export const TaskList = () => {
         <main className="task-list__main">
           <div className="task-list__header">
             <div className="task-list__view-controls">
-              <Button 
-                variant={viewMode === 'list' ? 'primary' : 'secondary'}
-                size="sm"
-                onClick={() => setViewMode('list')}
-              >
-                List
-              </Button>
-              <Button 
-                variant={viewMode === 'kanban' ? 'primary' : 'secondary'}
-                size="sm"
-                onClick={() => setViewMode('kanban')}
-              >
-                Kanban
-              </Button>
+              <div className="task-list__view-toggle">
+                <Button 
+                  variant={viewMode === 'list' ? 'primary' : 'secondary'}
+                  size="sm"
+                  onClick={() => setViewMode('list')}
+                >
+                  List
+                </Button>
+                <Button 
+                  variant={viewMode === 'kanban' ? 'primary' : 'secondary'}
+                  size="sm"
+                  onClick={() => setViewMode('kanban')}
+                >
+                  Kanban
+                </Button>
+              </div>
+              <Link to="/tasks/new">
+                <Button variant="primary" size="sm">
+                  + Create Task
+                </Button>
+              </Link>
             </div>
-            <Link to="/tasks/new">
-              <Button variant="primary" size="sm">
-                + Create Task
-              </Button>
-            </Link>
           </div>
 
           {loading && <div className="task-list__loading">Loading...</div>}

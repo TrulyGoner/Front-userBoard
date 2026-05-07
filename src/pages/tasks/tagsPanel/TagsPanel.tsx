@@ -44,7 +44,13 @@ export const TagsPanel = ({ task }: TagsPanelProps) => {
     }
   };
 
-  const handleRemoveTag = async (tagId: string) => {
+  const handleTagInputKeyPress = (e: React.KeyboardEvent<HTMLInputElement>): void => {
+    if (e.key === 'Enter') {
+      handleAddTag();
+    }
+  };
+
+  const handleRemoveTag = async (tagId: string): Promise<void> => {
     setLoading(true);
     setError(null);
 
@@ -95,11 +101,7 @@ export const TagsPanel = ({ task }: TagsPanelProps) => {
             placeholder="New tag name"
             value={newTag}
             onChange={(e) => setNewTag(e.target.value)}
-            onKeyPress={(e) => {
-              if (e.key === 'Enter') {
-                handleAddTag();
-              }
-            }}
+            onKeyPress={handleTagInputKeyPress}
           />
           <Button
             variant="primary"

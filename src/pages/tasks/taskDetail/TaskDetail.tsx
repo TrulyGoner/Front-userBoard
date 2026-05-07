@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams, Link } from 'react-router-dom';
 import { fetchTask } from '@store/slices/tasksSlice';
 import type { RootState, AppDispatch } from '@store';
+import { canEditTask } from '@shared/utils';
 import { Button, ErrorAlert } from '@shared/ui';
 import { useErrorHandling } from '@shared/hooks';
 import { AssignmentPanel, TagsPanel, BlockUserPanel } from '../shared';
@@ -41,9 +42,11 @@ export const TaskDetail = () => {
           <Button variant="secondary" size="sm">← Back to Tasks</Button>
         </Link>
         <div className="task-detail__actions">
-          <Link to={`/tasks/${id}/edit`}>
-            <Button variant="primary" size="sm">Edit Task</Button>
-          </Link>
+          {canEditTask(currentTask, user) && (
+            <Link to={`/tasks/${id}/edit`}>
+              <Button variant="primary" size="sm">Edit Task</Button>
+            </Link>
+          )}
           {currentTask.creator?.id !== user?.id && (
             <BlockUserPanel targetUser={currentTask.creator!} />
           )}

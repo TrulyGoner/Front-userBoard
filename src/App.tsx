@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Routes, Route, Navigate, Link } from 'react-router-dom';
 import type { RootState, AppDispatch } from '@store';
 import { logout, restoreAuthFromStorage } from '@store/slices/authSlice';
+import { isTokenExpired } from '@shared/utils';
 import { Login, Register, ChangePassword } from '@pages/auth';
 import { TaskList, TaskDetail, TaskForm } from '@pages/tasks';
 import { UserManagement } from '@pages/admin';
@@ -10,7 +11,7 @@ import { Button, Modal } from '@shared/ui';
 import './App.scss';
 
 function App() {
-  const { user } = useSelector((state: RootState) => state.auth);
+  const { user, token } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch<AppDispatch>();
   const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
@@ -20,6 +21,22 @@ function App() {
       setIsInitialized(true);
     });
   }, [dispatch]);
+
+  useEffect(() => {
+    if (!token) return;
+
+    const validateToken = () => {
+      if (isTokenExpired(token)) {
+        console.warn('⚠️ Token expired, logging out');
+        dispatch(logout());
+      }
+    };
+
+    validateToken();
+
+    const interval = setInterval(validateToken, 60000);
+    return () => clearInterval(interval);
+  }, [token, dispatch]);
 
   const handleLogout = () => {
     dispatch(logout());

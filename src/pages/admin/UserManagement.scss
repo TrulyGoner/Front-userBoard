@@ -2,7 +2,7 @@
 
 .user-management {
   padding: $spacing-lg;
-  max-width: 1200px;
+  max-width: $max-width-page;
   margin: 0 auto;
 
   h2 {
@@ -12,8 +12,8 @@
   }
 
   &__error {
-    background-color: #f8d7da;
-    color: #721c24;
+    background-color: $color-error-bg;
+    color: $color-error-text;
     padding: $spacing-lg;
     border-radius: $radius-lg;
     text-align: center;
@@ -23,7 +23,7 @@
     margin-bottom: $spacing-lg;
 
     input {
-      max-width: 400px;
+      max-width: $max-width-input;
     }
   }
 
@@ -58,7 +58,7 @@
           text-align: left;
           font-weight: $fw-bold;
           color: $color-text;
-          border-bottom: 2px solid $color-border;
+          border-bottom: $border-width-thick solid $color-border;
         }
       }
 
@@ -97,13 +97,13 @@
     font-weight: $fw-medium;
 
     &--admin {
-      background-color: #e7d4f5;
-      color: #4a148c;
+      background-color: $color-badge-admin;
+      color: $color-badge-admin-text;
     }
 
     &--user {
-      background-color: #e3f2fd;
-      color: #1565c0;
+      background-color: $color-badge-user;
+      color: $color-badge-user-text;
     }
   }
 
@@ -115,22 +115,33 @@
     font-weight: $fw-medium;
 
     &--active {
-      background-color: #d4edda;
-      color: #155724;
+      background-color: $color-status-active-bg;
+      color: $color-status-active-text;
     }
 
     &--banned {
-      background-color: #f8d7da;
-      color: #721c24;
+      background-color: $color-status-banned-bg;
+      color: $color-status-banned-text;
     }
   }
 
   &__actions {
     display: flex;
     gap: $spacing-sm;
+    flex-wrap: wrap;
 
     button {
       white-space: nowrap;
+      flex: 1;
+      min-width: 100px;
+    }
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+
+      button {
+        min-width: auto;
+      }
     }
   }
 }
