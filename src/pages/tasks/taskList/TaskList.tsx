@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useRef, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import type { RootState, AppDispatch } from '@store';
@@ -18,7 +18,7 @@ export const TaskList = () => {
   const { error, clearError } = useErrorHandling('tasks');
   const [viewMode, setViewMode] = useState<'list' | 'kanban'>('list');
   const [draggedTaskId, setDraggedTaskId] = useState<string | null>(null);
-  const [draggedTaskStatus, setDraggedTaskStatus] = useState<string | null>(null);
+  const draggedTaskStatusRef = useRef<string | null>(null);
   const [dragOverStatus, setDragOverStatus] = useState<string | null>(null);
 
   const kanbanTasks = useMemo(() => {
@@ -40,7 +40,7 @@ export const TaskList = () => {
     e.dataTransfer.effectAllowed = 'move';
     e.dataTransfer.setData('text/plain', taskId);
     setDraggedTaskId(taskId);
-    setDraggedTaskStatus(status);
+    draggedTaskStatusRef.current = status;
   };
 
   const handleDragOver = (status: string, e: React.DragEvent<HTMLDivElement>) => {
@@ -62,9 +62,9 @@ export const TaskList = () => {
     e.preventDefault();
     setDragOverStatus(null);
     
-    if (!draggedTaskId || draggedTaskStatus === newStatus) {
+    if (!draggedTaskId || draggedTaskStatusRef.current === newStatus) {
       setDraggedTaskId(null);
-      setDraggedTaskStatus(null);
+      draggedTaskStatusRef.current = null;
       return;
     }
 
@@ -74,12 +74,12 @@ export const TaskList = () => {
     }));
 
     setDraggedTaskId(null);
-    setDraggedTaskStatus(null);
+    draggedTaskStatusRef.current = null;
   };
 
   const handleDragEnd = () => {
     setDraggedTaskId(null);
-    setDraggedTaskStatus(null);
+    draggedTaskStatusRef.current = null;
     setDragOverStatus(null);
   };
 

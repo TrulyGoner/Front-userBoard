@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useRef, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchTasks, updateTaskStatus } from '@store/slices/tasksSlice';
 import type { RootState, AppDispatch } from '@store';
@@ -21,7 +21,7 @@ export const TaskBoard = () => {
   const { tasks, loading } = useSelector((state: RootState) => state.tasks);
   const { token, user } = useSelector((state: RootState) => state.auth);
   const [draggedTaskId, setDraggedTaskId] = useState<string | null>(null);
-  const [draggedTaskStatus, setDraggedTaskStatus] = useState<string | null>(null);
+  const draggedTaskStatusRef = useRef<string | null>(null);
   const [dragOverStatus, setDragOverStatus] = useState<string | null>(null);
 
   const filteredTasks = useMemo(() => ({
@@ -51,7 +51,7 @@ export const TaskBoard = () => {
     e.dataTransfer.setData('text/plain', taskId);
     
     setDraggedTaskId(taskId);
-    setDraggedTaskStatus(status);
+    draggedTaskStatusRef.current = status;
   };
 
   const handleDragOver = (status: string, e: React.DragEvent<HTMLDivElement>) => {
@@ -66,10 +66,10 @@ export const TaskBoard = () => {
     e.preventDefault();
     setDragOverStatus(null);
 
-    if (!draggedTaskId || draggedTaskStatus === newStatus) {
-      console.warn('⚠️ Drop cancelled:', { draggedTaskId, sameStatus: draggedTaskStatus === newStatus });
+    if (!draggedTaskId || draggedTaskStatusRef.current === newStatus) {
+      console.warn('⚠️ Drop cancelled:', { draggedTaskId, sameStatus: draggedTaskStatusRef.current === newStatus });
       setDraggedTaskId(null);
-      setDraggedTaskStatus(null);
+      draggedTaskStatusRef.current = null;
       return;
     }
 
@@ -77,7 +77,7 @@ export const TaskBoard = () => {
     if (!canMoveTask(task || null, user || null)) {
       console.warn('⚠️ Permission denied: You cannot move this task');
       setDraggedTaskId(null);
-      setDraggedTaskStatus(null);
+      draggedTaskStatusRef.current = null;
       return;
     }
 
@@ -87,7 +87,7 @@ export const TaskBoard = () => {
     }));
 
     setDraggedTaskId(null);
-    setDraggedTaskStatus(null);
+    draggedTaskStatusRef.current = null;
   };
 
   const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
@@ -100,7 +100,7 @@ export const TaskBoard = () => {
   const handleDragEnd = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     setDraggedTaskId(null);
-    setDraggedTaskStatus(null);
+    draggedTaskStatusRef.current = null;
     setDragOverStatus(null);
   };
 

@@ -17,7 +17,7 @@ export const DraggableTaskCard = ({
 }: DraggableTaskCardProps) => {
   const navigate = useNavigate();
 
-  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+  const navigateToTask = (e: React.MouseEvent<HTMLDivElement>) => {
     if (isDragged) {
       e.preventDefault();
       e.stopPropagation();
@@ -38,7 +38,7 @@ export const DraggableTaskCard = ({
       draggable
       onDragStart={(e) => onDragStart(task.id, task.status, e)}
       onDragEnd={onDragEnd}
-      onClick={handleClick}
+      onClick={navigateToTask}
       onKeyDown={handleKeyDown}
       role="button"
       tabIndex={0}
@@ -66,7 +66,7 @@ export const DraggableTaskCard = ({
         )}
       </div>
 
-      {task.tags && task.tags.length > 0 && (
+      {task.tags?.length ? (
         <div className="task-card__tags">
           {task.tags.map(tag => (
             <span key={tag.id} className="task-card__tag">
@@ -74,7 +74,7 @@ export const DraggableTaskCard = ({
             </span>
           ))}
         </div>
-      )}
+      ) : null}
     </div>
   );
 };
