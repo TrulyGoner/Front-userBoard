@@ -1,7 +1,7 @@
 #  Task Board Frontend
 
 Modern React + TypeScript + Vite frontend for collaborative task management.
-Backend: https://github.com/koshkinoko-hana/task-board-api/pull/1
+Backend: [https://github.com/koshkinoko-hana/task-board-api/pull/1](https://github.com/koshkinoko-hana/task-board-api)
 
 ##  Quick Start
 
