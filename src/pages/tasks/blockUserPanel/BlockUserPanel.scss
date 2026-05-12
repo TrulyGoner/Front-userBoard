@@ -32,8 +32,8 @@
   }
 
   &__warning {
-    background-color: #fff3cd;
-    color: #856404;
+    background-color: $color-badge-in-progress-bg;
+    color: $color-badge-in-progress;
     padding: $spacing-md;
     border-radius: $radius-md;
     margin: 0 0 $spacing-md 0;

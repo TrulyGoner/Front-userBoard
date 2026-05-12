@@ -78,6 +78,23 @@ class AdminApiService {
       throw new Error(axiosError.response?.data?.message || 'Failed to revoke admin role');
     }
   }
+
+  async blockUser(blockerId: string, blockedUserId: string, reason: string, token: string): Promise<void> {
+    try {
+      await axios.post(
+        `${API_BASE_URL}${API_ENDPOINTS.ADMIN.LIST_BLOCKS}`,
+        {
+          blockerId,
+          blockedUserId,
+          comment: reason,
+        },
+        { headers: this.getAuthHeaders(token) }
+      );
+    } catch (err) {
+      const axiosError = err as AxiosError<ErrorResponse>;
+      throw new Error(axiosError.response?.data?.message || 'Failed to block user');
+    }
+  }
 }
 
 export const adminApiService = new AdminApiService();

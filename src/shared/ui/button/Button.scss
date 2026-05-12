@@ -47,7 +47,7 @@
 
   &--danger {
     background-color: $color-danger;
-    color: white;
+    color: $color-danger;
 
     &:hover:not(:disabled) {
       background-color: color.adjust($color-danger, $lightness: -10%);

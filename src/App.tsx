@@ -3,11 +3,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Routes, Route, Navigate, Link } from 'react-router-dom';
 import type { RootState, AppDispatch } from '@store';
 import { logout, restoreAuthFromStorage } from '@store/slices/authSlice';
-import { isTokenExpired } from '@shared/utils';
+import { isTokenExpired, getTokenExpirationTime } from '@shared/utils';
 import { Login, Register, ChangePassword } from '@pages/auth';
 import { TaskList, TaskDetail, TaskForm } from '@pages/tasks';
 import { UserManagement } from '@pages/admin';
 import { Button, Modal } from '@shared/ui';
+import { ErrorBoundary } from '@/shared/ErrorBoundary/ErrorBoundary';
 import './App.scss';
 
 function App() {
@@ -25,6 +26,27 @@ function App() {
   useEffect(() => {
     if (!token) return;
 
+    if (isTokenExpired(token)) {
+      console.warn('⚠️ Token expired, logging out');
+      dispatch(logout());
+      return;
+    }
+
+    const remainingMs = getTokenExpirationTime(token);
+    if (remainingMs === null || remainingMs <= 0) {
+      dispatch(logout());
+      return;
+    }
+
+    const REFRESH_BEFORE_EXPIRY = 300000; 
+    const MAX_CHECK_INTERVAL = 300000; 
+    const MIN_CHECK_INTERVAL = 60000; 
+    
+    const checkInterval = Math.min(
+      Math.max(remainingMs - REFRESH_BEFORE_EXPIRY, MIN_CHECK_INTERVAL),
+      MAX_CHECK_INTERVAL
+    );
+
     const validateToken = () => {
       if (isTokenExpired(token)) {
         console.warn('⚠️ Token expired, logging out');
@@ -32,9 +54,7 @@ function App() {
       }
     };
 
-    validateToken();
-
-    const interval = setInterval(validateToken, 60000);
+    const interval = setInterval(validateToken, checkInterval);
     return () => clearInterval(interval);
   }, [token, dispatch]);
 
@@ -47,8 +67,9 @@ function App() {
   }
 
   return (
-    <div className="app">
-      <header className="app__header">
+    <ErrorBoundary>
+      <div className="app">
+        <header className="app__header">
         <div className="app__header-content">
           <Link to="/" className="app__logo-link">
             <h1 className="app__logo">Task Board</h1>
@@ -103,6 +124,7 @@ function App() {
         </Routes>
       </main>
     </div>
+    </ErrorBoundary>
   );
 }
 

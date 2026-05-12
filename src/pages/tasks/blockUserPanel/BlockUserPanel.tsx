@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
-import axios, { AxiosError } from 'axios';
 import type { RootState } from '@store';
-import { API_BASE_URL, API_ENDPOINTS } from '@shared/config';
+import { adminApiService } from '@shared/services';
 import { Button, Input, ErrorAlert } from '@shared/ui';
 import type { User } from '@shared/types';
 import './BlockUserPanel.scss';
@@ -10,10 +9,6 @@ import './BlockUserPanel.scss';
 interface BlockUserPanelProps {
   targetUser: User;
   onBlockSuccess?: () => void;
-}
-
-interface ErrorResponse {
-  message: string;
 }
 
 export const BlockUserPanel = ({ targetUser, onBlockSuccess }: BlockUserPanelProps) => {
@@ -33,25 +28,25 @@ export const BlockUserPanel = ({ targetUser, onBlockSuccess }: BlockUserPanelPro
       return;
     }
 
+    if (!user || !token) {
+      setError('Authentication required');
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
     try {
-      await axios.post(
-        `${API_BASE_URL}${API_ENDPOINTS.ADMIN.LIST_BLOCKS}`,
-        {
-          blockerId: user.id,
-          blockedUserId: targetUser.id,
-          comment: reason,
-        },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      await adminApiService.blockUser(user.id, targetUser.id, reason, token);
       setReason('');
       setIsOpen(false);
       onBlockSuccess?.();
     } catch (err) {
-      const axiosError = err as AxiosError<ErrorResponse>;
-      setError(axiosError.response?.data?.message || 'Failed to block user');
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('Failed to block user');
+      }
     } finally {
       setLoading(false);
     }
