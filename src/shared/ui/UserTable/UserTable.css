@@ -1,110 +1,148 @@
-.ut-empty {
-  text-align: center;
-  color: var(--border);
-  margin-top: 48px;
-  font-size: 1rem;
-}
-
-.ut-row--dragging {
-  opacity: 0.4;
-  cursor: grabbing;
-}
-
-.ut-row--drag-over {
-  box-shadow: inset 0 2px 0 var(--accent);
-}
-
-.ut-container {
-  font-size: 0.9rem;
+.users-table {
   width: 100%;
-}
+  
+  &__empty {
+    text-align: center;
+    padding: 48px 20px;
+    color: var(--text-secondary, #999);
+    font-size: 1rem;
+  }
 
-.ut-header-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr 150px 80px;
-  border-bottom: 2px solid var(--border);
-  background: var(--bg-secondary, #f5f5f5);
-}
+  &__wrapper {
+    overflow-x: auto;
+    border: 1px solid var(--border, #e0e0e0);
+    border-radius: 8px;
+  }
 
-.ut-th {
-  padding: 12px 16px;
-  color: var(--text-secondary, #666);
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  font-size: 0.75rem;
-  white-space: nowrap;
-}
+  &__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+  }
 
-.ut-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr 150px 80px;
-  align-items: center;
-  cursor: pointer;
-  border-bottom: 1px solid var(--border);
-  transition: background 0.15s;
-  box-sizing: border-box;
-}
+  &__header-row {
+    background: var(--bg-secondary, #f5f5f5);
+    border-bottom: 2px solid var(--border, #e0e0e0);
+  }
 
-.ut-row:hover {
-  background: var(--bg-hover, #f9f9f9);
-}
+  &__header-cell {
+    padding: 12px 16px;
+    text-align: left;
+    color: var(--text-secondary, #666);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 0.75rem;
+    white-space: nowrap;
 
-.ut-cell {
-  padding: 11px 16px;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  color: var(--text);
-}
+    &--actions {
+      text-align: right;
+      width: 200px;
+    }
+  }
 
-.ut-cell--actions {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  padding-right: 8px;
-  gap: 4px;
-}
+  &__row {
+    border-bottom: 1px solid var(--border, #e0e0e0);
+    transition: background-color 0.15s ease;
 
-.ut-action {
-  background: none;
-  border: 1px solid var(--border);
-  color: var(--text);
-  font-size: 0.85rem;
-  cursor: pointer;
-  padding: 4px 8px;
-  border-radius: 4px;
-  line-height: 1;
-  transition: all 0.15s;
-  white-space: nowrap;
-}
+    &:hover {
+      background-color: var(--bg-hover, #f9f9f9);
+    }
 
-.ut-action:hover {
-  background: var(--primary, #228be6);
-  color: white;
-  border-color: var(--primary, #228be6);
-}
+    &--banned {
+      opacity: 0.6;
+      background-color: rgba(255, 0, 0, 0.05);
 
-.ut-action--ban:hover {
-  background: #ff6b6b;
-  border-color: #ff6b6b;
-}
+      &:hover {
+        background-color: rgba(255, 0, 0, 0.08);
+      }
+    }
+  }
 
-.ut-action--unban:hover {
-  background: #37b24d;
-  border-color: #37b24d;
-}
+  &__cell {
+    padding: 12px 16px;
+    color: var(--text, #333);
+    word-break: break-word;
 
-.ut-action--admin:hover {
-  background: #228be6;
-  border-color: #228be6;
-}
+    &--actions {
+      text-align: right;
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      align-items: center;
+    }
+  }
 
-.ut-row--skeleton {
-  background: transparent;
-}
+  &__action {
+    padding: 6px 12px;
+    background: none;
+    border: 1px solid var(--border, #e0e0e0);
+    border-radius: 4px;
+    color: var(--text, #333);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
 
-.ut-row--skeleton:hover {
-  background: transparent;
+    &:hover {
+      background-color: var(--primary, #228be6);
+      color: white;
+      border-color: var(--primary, #228be6);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    &--ban {
+      color: #ef4444;
+      border-color: #ef4444;
+
+      &:hover {
+        background-color: #ef4444;
+        border-color: #ef4444;
+        color: white;
+      }
+    }
+
+    &--unban {
+      color: #10b981;
+      border-color: #10b981;
+
+      &:hover {
+        background-color: #10b981;
+        border-color: #10b981;
+        color: white;
+      }
+    }
+
+    &--admin {
+      color: #2563eb;
+      border-color: #2563eb;
+
+      &:hover {
+        background-color: #2563eb;
+        border-color: #2563eb;
+        color: white;
+      }
+    }
+
+    &--revoke {
+      color: #f59e0b;
+      border-color: #f59e0b;
+
+      &:hover {
+        background-color: #f59e0b;
+        border-color: #f59e0b;
+        color: white;
+      }
+    }
+  }
+
+  &__loading {
+    padding: 24px;
+    text-align: center;
+    color: var(--text-secondary, #999);
+  }
 }
