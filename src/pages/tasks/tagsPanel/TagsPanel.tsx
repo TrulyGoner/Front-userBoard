@@ -1,9 +1,8 @@
 import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import axios, { AxiosError } from 'axios';
-import type { RootState, AppDispatch } from '@store';
+import { useDispatch } from 'react-redux';
+import type { AppDispatch } from '@store';
 import { fetchTask } from '@store/slices/tasksSlice';
-import { API_BASE_URL, API_ENDPOINTS } from '@shared/config';
+import { tasksAPI } from '@shared/services';
 import { Button, Input, ErrorAlert } from '@shared/ui';
 import type { Task } from '@shared/types';
 import './TagsPanel.scss';
@@ -14,7 +13,6 @@ interface TagsPanelProps {
 
 export const TagsPanel = ({ task }: TagsPanelProps) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { token } = useSelector((state: RootState) => state.auth);
   const [newTag, setNewTag] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -29,16 +27,15 @@ export const TagsPanel = ({ task }: TagsPanelProps) => {
     setError(null);
 
     try {
-      await axios.post(
-        `${API_BASE_URL}${API_ENDPOINTS.TASKS.ADD_TAG(task.id)}`,
-        { name: newTag.trim() },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      await tasksAPI.addTag(task.id, newTag.trim());
       setNewTag('');
       dispatch(fetchTask(task.id));
     } catch (err) {
-      const error = err as AxiosError<{ message: string }>;
-      setError(error.response?.data?.message || 'Failed to add tag');
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('Failed to add tag');
+      }
     } finally {
       setLoading(false);
     }
@@ -59,14 +56,14 @@ export const TagsPanel = ({ task }: TagsPanelProps) => {
     setError(null);
 
     try {
-      await axios.delete(
-        `${API_BASE_URL}${API_ENDPOINTS.TASKS.REMOVE_TAG(task.id, tagId)}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      await tasksAPI.removeTag(task.id, tagId);
       dispatch(fetchTask(task.id));
     } catch (err) {
-      const error = err as AxiosError<{ message: string }>;
-      setError(error.response?.data?.message || 'Failed to remove tag');
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('Failed to remove tag');
+      }
     } finally {
       setLoading(false);
     }

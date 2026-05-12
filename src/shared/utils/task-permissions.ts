@@ -27,6 +27,7 @@ export const canMoveTask = (task: Task | null, user: User | null): boolean => {
 
   const isCreator = task.creatorId === user.id;
   const isAssignee = task.assigneeId === user.id;
+  const isAdmin = user.role === 'ADMIN';
 
-  return isCreator || isAssignee;
+  return isCreator || isAssignee || isAdmin;
 };

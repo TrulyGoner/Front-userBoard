@@ -65,23 +65,23 @@
     font-weight: $fw-medium;
 
     &--priority-low {
-      background-color: #d4edda;
-      color: #155724;
+      background-color: $color-badge-low-bg;
+      color: $color-badge-low;
     }
 
     &--priority-medium {
-      background-color: #fff3cd;
-      color: #856404;
+      background-color: $color-badge-in-progress-bg;
+      color: $color-badge-in-progress;
     }
 
     &--priority-high {
-      background-color: #f8d7da;
-      color: #721c24;
+      background-color: $color-badge-high-bg;
+      color: $color-badge-high;
     }
 
     &--assignee {
-      background-color: #e3f2fd;
-      color: #1976d2;
+      background-color: $color-badge-pending-bg;
+      color: $color-badge-pending;
     }
   }
 

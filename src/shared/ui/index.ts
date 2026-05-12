@@ -1,3 +1,5 @@
+import type { SkeletonRow } from './Skeleton';
+
 export { Button } from './button/Button';
 export { Input } from './input/Input';
 export { Select } from './select/Select';
@@ -7,3 +9,4 @@ export { EmptyState } from './emptyState/EmptyState';
 export { DraggableTaskCard } from './draggable/DraggableTaskCard';
 export { UsersTable } from './usersTable';
 export { UserTable } from './UserTable';
+export { SkeletonRow} from './Skeleton'
