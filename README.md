@@ -17,27 +17,36 @@ npm run lint       # Code quality check
 - **Authentication** — Register & login with nickname-based accounts
 - **Task Management** — Create, edit, view tasks with status & priority
 - **Tagging System** — Organize tasks with custom tags
+- **User Management** — Admin panel with configurable table components
 - **Responsive UI** — Built with SCSS & accessible components
 - **Redux State** — Centralized auth & tasks management
 - **Type-safe** — Full TypeScript coverage
 
 ##  Tech Stack
 
-- **React 18** — UI framework
+- **React 19** — UI framework
 - **Redux Toolkit** — State management
 - **Vite** — Lightning-fast bundler
 - **TypeScript** — Type safety
 - **SCSS** — Styling
 - **React Router** — Client-side routing
+- **React Window** — Virtualization for large lists
 
 ##  Project Structure
 
 ```
 src/
-├── pages/       # Page components (Auth, Tasks)
+├── pages/       # Page components (Auth, Tasks, Admin)
 ├── features/    # Feature-specific logic
 ├── shared/      # Reusable UI & utilities
+│   ├── ui/
+│   │   ├── UserTable/      # Virtualized table component
+│   │   ├── usersTable/     # HTML table component
+│   │   └── ...other UI
+│   └── utils/tableConfigs.ts  # Table configuration factories
 ├── store/       # Redux slices
 └── components/  # Shared components
 ```
+
+
 
