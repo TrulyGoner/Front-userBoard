@@ -3,6 +3,7 @@ export interface User {
   nickname: string;
   email?: string;
   role: 'USER' | 'ADMIN';
+  bannedAt?: string | null;
 }
 
 export interface AuthState {
@@ -39,4 +40,34 @@ export interface Tag {
 export interface AuthResponse {
   accessToken: string;
   user: User;
+}
+
+export type Nullable<T> = T | null;
+
+export interface TableColumn<T = User> {
+  key: string;
+  label: string;
+  render?: (item: T) => React.ReactNode;
+  className?: string;
+  width?: string | number;
+}
+
+export interface TableAction<T = User> {
+  key: string;
+  label: string | React.ReactNode;
+  onClick: (item: T) => void;
+  className?: string;
+  title?: string;
+  isVisible?: (item: T) => boolean;
+}
+
+export interface TableConfig<T = User> {
+  columns: TableColumn<T>[];
+  actions?: TableAction<T>[];
+  maxHeight?: number;
+  rowHeight?: number;
+  emptyMessage?: string;
+  enableHover?: boolean;
+  enableDragDrop?: boolean;
+  enableRowClick?: boolean;
 }

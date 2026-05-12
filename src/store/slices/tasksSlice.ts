@@ -297,14 +297,8 @@ const tasksSlice = createSlice({
         state.error = action.error.message || 'Failed to reject assignment';
       })
 
-      .addCase(updateTaskStatus.pending, (state, action) => {
+      .addCase(updateTaskStatus.pending, (state) => {
         state.error = null;
-        const { id, status } = action.meta.arg;
-        const task = state.tasks.find(t => t.id === id);
-        if (task) task.status = status;
-        if (state.currentTask?.id === id) {
-          state.currentTask.status = status;
-        }
       })
       .addCase(updateTaskStatus.fulfilled, (state, action) => {
         updateTaskEverywhere(state, action.payload);

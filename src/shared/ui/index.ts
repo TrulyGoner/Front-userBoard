@@ -5,3 +5,5 @@ export { ErrorAlert } from './errorAlert/ErrorAlert';
 export { Modal } from './modal/Modal';
 export { EmptyState } from './emptyState/EmptyState';
 export { DraggableTaskCard } from './draggable/DraggableTaskCard';
+export { UsersTable } from './usersTable';
+export { UserTable } from './UserTable';

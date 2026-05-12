@@ -4,8 +4,7 @@ import { fetchTasks, updateTaskStatus } from '@store/slices/tasksSlice';
 import type { RootState, AppDispatch } from '@store';
 import { Link } from 'react-router-dom';
 import { canMoveTask } from '@shared/utils';
-import { Button } from '@shared/ui';
-import { DraggableTaskCard } from './DraggableTaskCard';
+import { Button, DraggableTaskCard } from '@shared/ui';
 import './TaskBoard.scss';
 
 const TASK_STATUSES = {

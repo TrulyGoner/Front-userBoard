@@ -1,33 +1,34 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import type { RootState } from '@store';
 import { adminApiService, type UserWithBanned } from '@shared/services';
-import { Button, ErrorAlert, Input } from '@shared/ui';
+import { useError } from '@shared/contexts';
+import { Input, UsersTable } from '@shared/ui';
+import { createUserManagementConfig } from '@shared/utils/tableConfigs';
 import { UserManagementLoading, UserManagementEmpty } from './components';
 import './UserManagement.scss';
 
 export const UserManagement = () => {
   const { user, token } = useSelector((state: RootState) => state.auth);
+  const { emitError } = useError();
   const [users, setUsers] = useState<UserWithBanned[]>([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
 
   const fetchUsers = useCallback(async () => {
     if (!token) return;
     
     setLoading(true);
-    setError(null);
 
     try {
       const data = await adminApiService.fetchUsers(token);
       setUsers(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load users');
+      emitError(err);
     } finally {
       setLoading(false);
     }
-  }, [token]);
+  }, [token, emitError]);
 
   useEffect(() => {
     void fetchUsers();
@@ -40,7 +41,7 @@ export const UserManagement = () => {
       await adminApiService.banUser(userId, token);
       await fetchUsers();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to ban user');
+      emitError(err);
     }
   };
 
@@ -51,7 +52,7 @@ export const UserManagement = () => {
       await adminApiService.unbanUser(userId, token);
       await fetchUsers();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to unban user');
+      emitError(err);
     }
   };
 
@@ -62,7 +63,7 @@ export const UserManagement = () => {
       await adminApiService.grantAdminRole(userId, token);
       await fetchUsers();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to grant admin role');
+      emitError(err);
     }
   };
 
@@ -73,7 +74,7 @@ export const UserManagement = () => {
       await adminApiService.revokeAdminRole(userId, token);
       await fetchUsers();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to revoke admin role');
+      emitError(err);
     }
   };
 
@@ -92,11 +93,20 @@ export const UserManagement = () => {
     (u.email && u.email.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
+  const tableConfig = useMemo(() => 
+    createUserManagementConfig({
+      currentUserId: user?.id,
+      onBan: handleBanUser,
+      onUnban: handleUnbanUser,
+      onGrantAdmin: handleGrantAdminRole,
+      onRevokeAdmin: handleRevokeAdminRole,
+    }),
+    [user?.id]
+  );
+
   return (
     <div className="user-management">
       <h2>User Management</h2>
-
-      {error && <ErrorAlert error={error} onClear={() => setError(null)} />}
 
       <div className="user-management__search">
         <Input
@@ -111,83 +121,15 @@ export const UserManagement = () => {
 
       {!loading && (
         <>
-          <UserManagementEmpty isEmpty={filteredUsers.length === 0} />
-
+          {filteredUsers.length === 0 && <UserManagementEmpty isEmpty={true} />}
+          
           {filteredUsers.length > 0 && (
             <div className="user-management__table">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Nickname</th>
-                    <th>Email</th>
-                    <th>Role</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredUsers.map(u => (
-                    <tr key={u.id} className={u.bannedAt ? 'user-management__row--banned' : ''}>
-                      <td>{u.nickname}</td>
-                      <td>{u.email || '-'}</td>
-                      <td>
-                        <span className={`user-management__badge user-management__badge--${u.role.toLowerCase()}`}>
-                          {u.role}
-                        </span>
-                      </td>
-                      <td>
-                        {u.bannedAt ? (
-                          <span className="user-management__status user-management__status--banned">Banned</span>
-                        ) : (
-                          <span className="user-management__status user-management__status--active">Active</span>
-                        )}
-                      </td>
-                      <td>
-                        {u.id !== user.id && (
-                          <div className="user-management__actions">
-                            {u.bannedAt ? (
-                              <Button
-                                variant="secondary"
-                                size="sm"
-                                onClick={() => handleUnbanUser(u.id)}
-                              >
-                                Unban
-                              </Button>
-                            ) : (
-                              <>
-                                <Button
-                                  variant="danger"
-                                  size="sm"
-                                  onClick={() => handleBanUser(u.id)}
-                                >
-                                  Ban
-                                </Button>
-                                {u.role === 'USER' ? (
-                                  <Button
-                                    variant="primary"
-                                    size="sm"
-                                    onClick={() => handleGrantAdminRole(u.id)}
-                                  >
-                                    Make Admin
-                                  </Button>
-                                ) : (
-                                  <Button
-                                    variant="secondary"
-                                    size="sm"
-                                    onClick={() => handleRevokeAdminRole(u.id)}
-                                  >
-                                    Revoke Admin
-                                  </Button>
-                                )}
-                              </>
-                            )}
-                          </div>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <UsersTable
+                users={filteredUsers}
+                loading={loading}
+                config={tableConfig}
+              />
             </div>
           )}
         </>

@@ -44,6 +44,10 @@ export const TagsPanel = ({ task }: TagsPanelProps) => {
     }
   };
 
+  const handleTagInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    setNewTag(e.target.value);
+  };
+
   const handleTagInputKeyPress = (e: React.KeyboardEvent<HTMLInputElement>): void => {
     if (e.key === 'Enter') {
       handleAddTag();
@@ -100,7 +104,7 @@ export const TagsPanel = ({ task }: TagsPanelProps) => {
             type="text"
             placeholder="New tag name"
             value={newTag}
-            onChange={(e) => setNewTag(e.target.value)}
+            onChange={handleTagInputChange}
             onKeyPress={handleTagInputKeyPress}
           />
           <Button
