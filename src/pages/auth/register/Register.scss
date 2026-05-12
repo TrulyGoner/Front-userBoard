@@ -1,0 +1,55 @@
+@use '@shared/styles/variables' as *;
+
+.auth-container {
+  @include flex-center;
+  flex: 1;
+  width: 100%;
+  padding: $spacing-md;
+  background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.auth-form {
+  background: $color-bg;
+  border-radius: $radius-xl;
+  padding: $spacing-2xl;
+  width: 100%;
+  max-width: 500px;
+  box-shadow: $shadow-xl;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
+    margin-bottom: $spacing-xl;
+
+    h2 {
+      margin: 0;
+      color: $color-text;
+      flex: 1;
+      text-align: center;
+    }
+  }
+
+  &__back {
+    font-size: $fs-2xl;
+    color: $color-text-secondary;
+    line-height: 1;
+    transition: color $transition-fast;
+    flex-shrink: 0;
+
+    &:hover {
+      color: $color-primary;
+    }
+  }
+
+  &__form {
+    @include flex-column;
+    gap: $spacing-lg;
+  }
+
+  @include media-up('md') {
+    padding: $spacing-2xl * 1.5;
+  }
+}

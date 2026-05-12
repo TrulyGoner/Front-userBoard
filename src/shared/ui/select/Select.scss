@@ -1,0 +1,57 @@
+@use '@shared/styles/variables' as *;
+
+.select-wrapper {
+  @include flex-column;
+  gap: $spacing-sm;
+  width: 100%;
+}
+
+.select-label {
+  font-weight: $fw-medium;
+  font-size: $fs-sm;
+  color: $color-text;
+}
+
+.select {
+  @include focus-outline;
+  padding: $spacing-sm $spacing-md;
+  border: 1px solid $color-border;
+  border-radius: $radius-lg;
+  font-size: $fs-base;
+  background-color: white;
+  cursor: pointer;
+  transition: all $transition-fast;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23333' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right $spacing-md center;
+  padding-right: $spacing-lg + $spacing-md;
+
+  &:hover:not(:disabled) {
+    border-color: $color-border-dark;
+  }
+
+  &:focus {
+    border-color: $color-primary;
+  }
+
+  &:disabled {
+    background-color: $color-bg-tertiary;
+    color: $color-text-tertiary;
+    cursor: not-allowed;
+  }
+
+  &--error {
+    border-color: $color-danger;
+
+    &:focus {
+      border-color: $color-danger;
+    }
+  }
+}
+
+.select-error {
+  font-size: $fs-xs;
+  color: $color-danger;
+  margin-top: -$spacing-sm;
+}

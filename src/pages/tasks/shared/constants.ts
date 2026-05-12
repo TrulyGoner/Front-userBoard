@@ -16,14 +16,12 @@ export const VISIBILITY_OPTIONS = [
   { value: 'ANYONE', label: 'Anyone' },
 ];
 
-// Status badge styling
 export const STATUS_VARIANTS: Record<string, string> = {
   TODO: 'default',
   IN_PROGRESS: 'warning',
   DONE: 'success',
 };
 
-// Priority color mapping
 export const PRIORITY_VARIANTS: Record<string, string> = {
   LOW: 'success',
   MEDIUM: 'warning',

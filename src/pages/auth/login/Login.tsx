@@ -1,10 +1,11 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
+import { Link } from 'react-router-dom';
 import type { RootState, AppDispatch } from '@store';
 import { login } from '@store/slices/authSlice';
 import { Button, Input, ErrorAlert } from '@shared/ui';
 import { useErrorHandling } from '@shared/hooks';
-import './AuthForms.scss';
+import './Login.scss';
 
 interface LoginForm {
   nickname: string;
@@ -44,6 +45,9 @@ export const Login = () => {
           <Button type="submit" variant="primary" fullWidth disabled={loading}>
             {loading ? 'Logging in...' : 'Login'}
           </Button>
+          <div className="auth-form__register-link">
+            <p>Don't have an account? <Link to="/register">Register here</Link></p>
+          </div>
         </form>
       </div>
     </div>

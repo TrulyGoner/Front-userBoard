@@ -1,0 +1,26 @@
+@use '@shared/styles/variables' as *;
+
+.empty-state {
+  text-align: center;
+  padding: $spacing-2xl $spacing-lg;
+  color: $color-text-secondary;
+
+  &__icon {
+    margin-bottom: $spacing-lg;
+    font-size: 3rem;
+    opacity: 0.5;
+  }
+
+  &__title {
+    margin: 0 0 $spacing-sm 0;
+    font-size: $fs-lg;
+    color: $color-text;
+    font-weight: $fw-semibold;
+  }
+
+  &__description {
+    margin: 0;
+    font-size: $fs-sm;
+    color: $color-text-secondary;
+  }
+}
