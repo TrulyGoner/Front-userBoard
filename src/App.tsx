@@ -10,6 +10,7 @@ import { UserManagement } from '@pages/admin';
 import { Button, Modal } from '@shared/ui';
 import { ErrorBoundary } from '@/shared/ErrorBoundary/ErrorBoundary';
 import './App.scss';
+import { REFRESH_BEFORE_EXPIRY, MAX_CHECK_INTERVAL, MIN_CHECK_INTERVAL } from './pages/tasks/shared/constants';
 
 function App() {
   const { user, token } = useSelector((state: RootState) => state.auth);
@@ -37,10 +38,6 @@ function App() {
       dispatch(logout());
       return;
     }
-
-    const REFRESH_BEFORE_EXPIRY = 300000; 
-    const MAX_CHECK_INTERVAL = 300000; 
-    const MIN_CHECK_INTERVAL = 60000; 
     
     const checkInterval = Math.min(
       Math.max(remainingMs - REFRESH_BEFORE_EXPIRY, MIN_CHECK_INTERVAL),
