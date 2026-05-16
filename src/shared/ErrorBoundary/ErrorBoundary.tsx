@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
-import type {ReactNode} from 'react'
-import { useSelector } from 'react-redux';
+import type { ReactNode } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import type { RootState } from '@store';
-import { ErrorAlert } from '@shared/ui';
+import { ErrorAlert, Button } from '@shared/ui';
+import { clearError as clearTasksError } from '@store/slices/tasksSlice';
+import { clearError as clearAuthError } from '@store/slices/authSlice';
 import './ErrorBoundary.scss';
 
 interface ErrorBoundaryProps {
@@ -10,21 +11,16 @@ interface ErrorBoundaryProps {
 }
 
 export const ErrorBoundary = ({ children }: ErrorBoundaryProps) => {
-  const [hasError, setHasError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const dispatch = useDispatch();
   const tasksError = useSelector((state: RootState) => state.tasks.error);
   const authError = useSelector((state: RootState) => state.auth.error);
 
-  useEffect(() => {
-    if (tasksError || authError) {
-      setHasError(true);
-      setErrorMessage(tasksError || authError || 'An error occurred');
-    }
-  }, [tasksError, authError]);
+  const errorMessage = tasksError || authError || null;
+  const hasError = Boolean(errorMessage);
 
   const handleClearError = () => {
-    setHasError(false);
-    setErrorMessage(null);
+    dispatch(clearTasksError());
+    dispatch(clearAuthError());
   };
 
   if (hasError && errorMessage) {
@@ -32,12 +28,13 @@ export const ErrorBoundary = ({ children }: ErrorBoundaryProps) => {
       <div className="error-boundary">
         <div className="error-boundary__content">
           <ErrorAlert error={errorMessage} onClear={handleClearError} />
-          <button 
-            className="error-boundary__retry-button"
+          <Button
+            variant="primary"
+            size="lg"
             onClick={() => window.location.reload()}
           >
             Reload Page
-          </button>
+          </Button>
         </div>
       </div>
     );

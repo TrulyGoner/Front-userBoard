@@ -27,3 +27,8 @@ export const PRIORITY_VARIANTS: Record<string, string> = {
   MEDIUM: 'warning',
   HIGH: 'danger',
 };
+
+
+export const REFRESH_BEFORE_EXPIRY = 300000; 
+export const MAX_CHECK_INTERVAL = 300000; 
+export const MIN_CHECK_INTERVAL = 60000; 
